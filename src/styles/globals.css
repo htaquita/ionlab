@@ -1,0 +1,88 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* ── Backgrounds ── */
+  --navy:   #09090f;
+  --card:   #17171f;
+  --card2:  #1d1d28;
+  --card3:  #222230;
+
+  /* ── Acento principal: violeta ── */
+  --teal:        #8b7cf8;
+  --teal-dim:    rgba(139,124,248,0.12);
+  --teal-border: rgba(139,124,248,0.28);
+
+  /* ── Metais / cátions: amber ── */
+  --orange:        #f0a742;
+  --orange-dim:    rgba(240,167,66,0.14);
+  --orange-border: rgba(240,167,66,0.30);
+
+  /* ── Ametais / ânions: mint ── */
+  --blue:        #3ee8c4;
+  --blue-dim:    rgba(62,232,196,0.12);
+  --blue-border: rgba(62,232,196,0.27);
+
+  /* ── Módulo 4 / boss: rose ── */
+  --purple:        #f06e7a;
+  --purple-dim:    rgba(240,110,122,0.12);
+  --purple-border: rgba(240,110,122,0.28);
+
+  /* ── Texto ── */
+  --text:  #ededfc;
+  --text2: #8888aa;
+  --text3: #4a4a68;
+
+  /* ── Bordas ── */
+  --border:  rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+
+  /* ── Gamificação ── */
+  --gold:   #f0a742;
+  --streak: #f06e7a;
+
+  /* ── Feedback ── */
+  --green: #3ee8c4;
+  --red:   #f87171;
+
+  /* ── Raios ── */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+}
+
+body {
+  background: var(--navy);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+}
+
+button { font-family: inherit; cursor: pointer; }
+input, select { font-family: inherit; }
+
+@keyframes popIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+@keyframes pulse {
+  0%,100% { transform: scale(1); }
+  50%     { transform: scale(1.05); }
+}
+@keyframes floatUp {
+  0%   { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-40px); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25%     { transform: translateX(-6px); }
+  75%     { transform: translateX(6px); }
+}
+@keyframes revealFormula {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}

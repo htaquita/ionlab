@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>IonLab</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #0a1628; --card: #152035; --card2: #1a2840;
+    --teal: #4ecdc4; --teal-dim: rgba(78,205,196,0.15); --teal-border: rgba(78,205,196,0.3);
+    --text: #e8eef5; --text2: #8ba0b8; --text3: #4a6280;
+    --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.12);
+    --gold: #f5c842; --streak: #ff8c42;
+  }
+  body { background: var(--navy); font-family: 'Segoe UI', system-ui, sans-serif; color: var(--text); min-height: 100vh; }
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: flex; }
+  .bg { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+  .dot { position: absolute; border-radius: 50%; background: var(--teal); }
+
+  .auth-screen { flex-direction: column; align-items: center; justify-content: center; padding: 2rem; position: relative; }
+  .auth-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 2rem; z-index: 1; }
+  .auth-logo-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--teal-dim); border: 1px solid var(--teal-border); display: flex; align-items: center; justify-content: center; }
+  .auth-logo span { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+  .auth-logo span b { color: var(--teal); font-weight: 700; }
+  .auth-card { background: var(--card); border: 1px solid var(--border2); border-radius: 20px; padding: 2.5rem 2rem; width: 100%; max-width: 440px; z-index: 1; }
+  .auth-card h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+  .auth-card > p { color: var(--text2); font-size: 14px; margin-bottom: 2rem; }
+
+  .field {
+    display: flex; align-items: center;
+    background: var(--card2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 0 14px; margin-bottom: 14px;
+    transition: border-color 0.2s;
+  }
+  .field:focus-within { border-color: var(--teal-border); }
+  .field-icon { display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: 20px; margin-right: 10px; opacity: 0.45; }
+  .field-icon svg { width: 16px; height: 16px; display: block; }
+  .field input, .field select {
+    flex: 1; background: transparent; border: none; outline: none;
+    color: var(--text); font-size: 15px; padding: 14px 0; min-width: 0;
+  }
+  .field input::placeholder { color: var(--text3); }
+  .field select { color: var(--text2); cursor: pointer; appearance: none; }
+  .field select option { background: var(--card2); color: var(--text); }
+  .field-arrow { display: flex; align-items: center; opacity: 0.4; flex-shrink: 0; margin-left: 6px; }
+  .field-arrow svg { width: 14px; height: 14px; display: block; }
+
+  .btn-main {
+    width: 100%; padding: 15px; background: var(--teal); color: #0a1628; font-size: 16px; font-weight: 700;
+    border: none; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    gap: 8px; margin-top: 8px; transition: opacity 0.2s, transform 0.1s;
+  }
+  .btn-main:hover { opacity: 0.9; }
+  .btn-main:active { transform: scale(0.98); }
+  .auth-footer { text-align: center; margin-top: 1.2rem; font-size: 14px; color: var(--text2); }
+  .auth-footer a { color: var(--teal); cursor: pointer; font-weight: 600; }
+
+  .navbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 60px; background: rgba(10,22,40,0.95);
+    border-bottom: 1px solid var(--border); display: flex; align-items: center;
+    justify-content: space-between; padding: 0 1.5rem; z-index: 100;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 8px; }
+  .nav-logo-icon { width: 34px; height: 34px; border-radius: 9px; background: var(--teal-dim); border: 1px solid var(--teal-border); display: flex; align-items: center; justify-content: center; }
+  .nav-logo span { font-size: 18px; font-weight: 700; }
+  .nav-logo span b { color: var(--teal); }
+  .nav-right { display: flex; align-items: center; gap: 1.2rem; }
+  .nav-stat { display: flex; align-items: center; gap: 6px; font-size: 15px; font-weight: 600; }
+  .nav-streak { color: var(--streak); }
+  .nav-xp { color: var(--gold); }
+  .nav-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--teal-dim); border: 2px solid var(--teal-border); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--teal); }
+
+  .map-screen { flex-direction: column; padding-top: 60px; }
+  .map-content { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 3rem 1.5rem 4rem; }
+  .map-header { text-align: center; margin-bottom: 3rem; }
+  .map-header h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px; }
+  .map-header p { color: var(--text2); font-size: 15px; }
+  .modules-list { width: 100%; max-width: 700px; display: flex; flex-direction: column; }
+  .module-card {
+    background: var(--card); border: 1px solid var(--border2); border-radius: 18px;
+    padding: 1.5rem; display: flex; align-items: center; gap: 1.2rem;
+    cursor: pointer; transition: border-color 0.2s, transform 0.1s;
+  }
+  .module-card:hover:not(.locked) { border-color: var(--teal-border); transform: translateY(-2px); }
+  .module-card.locked { cursor: default; opacity: 0.5; }
+  .module-card.active { border-color: var(--teal-border); }
+  .module-icon { width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .module-icon.teal { background: var(--teal-dim); border: 1px solid var(--teal-border); }
+  .module-icon.grey { background: rgba(255,255,255,0.04); border: 1px solid var(--border); }
+  .module-info { flex: 1; min-width: 0; }
+  .module-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--text2); margin-bottom: 4px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+  .module-label .pct { color: var(--teal); }
+  .module-info h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .module-info p { font-size: 13px; color: var(--text2); margin-bottom: 12px; }
+  .progress-bar { height: 6px; background: rgba(255,255,255,0.08); border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--teal); border-radius: 99px; transition: width 1s ease; }
+  .xp-tag { font-size: 12px; font-weight: 700; color: var(--gold); margin-top: 6px; }
+  .connector { width: 2px; height: 20px; background: var(--border2); margin: 0 auto; }
+</style>
+</head>
+<body>
+
+<div class="bg" id="bg"></div>
+
+<!-- LOGIN -->
+<div class="screen active auth-screen" id="screen-login">
+  <div class="auth-logo">
+    <div class="auth-logo-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4ecdc4" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="9" opacity="0.4"/>
+        <line x1="12" y1="3" x2="12" y2="7"/><line x1="12" y1="17" x2="12" y2="21"/>
+        <line x1="3" y1="12" x2="7" y2="12"/><line x1="17" y1="12" x2="21" y2="12"/>
+      </svg>
+    </div>
+    <span>Ion<b>Lab</b></span>
+  </div>
+  <div class="auth-card">
+    <h1>Bem-vindo de volta</h1>
+    <p>Entre para continuar sua jornada</p>
+    <div class="field">
+      <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 7L2 7"/></svg></span>
+      <input type="email" placeholder="E-mail"/>
+    </div>
+    <div class="field">
+      <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+      <input type="password" placeholder="Senha"/>
+    </div>
+    <button class="btn-main" onclick="goTo('screen-map')">Entrar <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+    <div class="auth-footer">Não tem uma conta? <a onclick="goTo('screen-register')">Criar conta</a></div>
+  </div>
+</div>
+
+<!-- CADASTRO -->
+<div class="screen auth-screen" id="screen-register">
+  <div class="auth-logo">
+    <div class="auth-logo-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4ecdc4" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="9" opacity="0.4"/>
+        <line x1="12" y1="3" x2="12" y2="7"/><line x1="12" y1="17" x2="12" y2="21"/>
+        <line x1="3" y1="12" x2="7" y2="12"/><line x1="17" y1="12" x2="21" y2="12"/>
+      </svg>
+    </div>
+    <span>Ion<b>Lab</b></span>
+  </div>
+  <div class="auth-card">
+    <h1>Crie sua conta</h1>
+    <p>Comece a dominar as ligações iônicas</p>
+    <div class="field">
+      <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+      <input type="text" placeholder="Nome completo"/>
+    </div>
+    <div class="field">
+      <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 7L2 7"/></svg></span>
+      <input type="email" placeholder="E-mail"/>
+    </div>
+    <div class="field">
+      <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+      <input type="password" placeholder="Senha"/>
+    </div>
+    <div class="field">
+      <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+      <input type="password" placeholder="Confirmar senha"/>
+    </div>
+    <div class="field">
+      <span class="field-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></span>
+      <select><option value="" disabled selected>Selecione sua turma</option><option>1º Ano — Ensino Médio</option><option>2º Ano — Ensino Médio</option><option>3º Ano — Ensino Médio</option></select>
+      <span class="field-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span>
+    </div>
+    <button class="btn-main" onclick="goTo('screen-map')">Criar conta <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+    <div class="auth-footer">Já tem uma conta? <a onclick="goTo('screen-login')">Entrar</a></div>
+  </div>
+</div>
+
+<!-- MAPA -->
+<div class="screen map-screen" id="screen-map">
+  <nav class="navbar">
+    <div class="nav-logo">
+      <div class="nav-logo-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ecdc4" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="9" opacity="0.4"/>
+          <line x1="12" y1="3" x2="12" y2="7"/><line x1="12" y1="17" x2="12" y2="21"/>
+          <line x1="3" y1="12" x2="7" y2="12"/><line x1="17" y1="12" x2="21" y2="12"/>
+        </svg>
+      </div>
+      <span>Ion<b>Lab</b></span>
+    </div>
+    <div class="nav-right">
+      <div class="nav-stat nav-streak">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C9 7 6 9 6 14a6 6 0 0 0 12 0c0-5-3-7-6-12z"/></svg> 5
+      </div>
+      <div class="nav-stat nav-xp">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> 1.240 XP
+      </div>
+      <div class="nav-avatar">A</div>
+    </div>
+  </nav>
+  <div class="map-content">
+    <div class="map-header">
+      <h1>Sua Jornada de Aprendizado</h1>
+      <p>Domine as ligações iônicas passo a passo</p>
+    </div>
+    <div class="modules-list">
+      <div class="module-card active">
+        <div class="module-icon teal">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4ecdc4" stroke-width="1.8">
+            <circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8" stroke-dasharray="3 2" opacity="0.5"/>
+            <circle cx="19" cy="5" r="2"/><circle cx="5" cy="19" r="2"/>
+          </svg>
+        </div>
+        <div class="module-info">
+          <div class="module-label">MÓDULO 1 <span class="pct">60%</span></div>
+          <h3>Identificação de Íons</h3>
+          <p>Aprenda a identificar cátions e ânions</p>
+          <div class="progress-bar"><div class="progress-fill" id="p1" style="width:0%"></div></div>
+          <div class="xp-tag">+200 XP</div>
+        </div>
+      </div>
+      <div class="connector"></div>
+      <div class="module-card locked">
+        <div class="module-icon grey"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4a6280" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <div class="module-info">
+          <div class="module-label">MÓDULO 2</div>
+          <h3>Ligações Iônicas</h3>
+          <p>Domine a transferência de elétrons entre átomos</p>
+          <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+          <div class="xp-tag">+250 XP</div>
+        </div>
+      </div>
+      <div class="connector"></div>
+      <div class="module-card locked">
+        <div class="module-icon grey"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4a6280" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <div class="module-info">
+          <div class="module-label">MÓDULO 3</div>
+          <h3>Fórmulas e Nomenclatura</h3>
+          <p>Monte fórmulas e nomeie compostos iônicos</p>
+          <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+          <div class="xp-tag">+300 XP</div>
+        </div>
+      </div>
+      <div class="connector"></div>
+      <div class="module-card locked">
+        <div class="module-icon grey"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4a6280" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <div class="module-info">
+          <div class="module-label">MÓDULO 4</div>
+          <h3>Desafio Final</h3>
+          <p>Aplique tudo que aprendeu nos quiz finais</p>
+          <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+          <div class="xp-tag">+400 XP</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function goTo(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0,0);
+  }
+  const bg = document.getElementById('bg');
+  for (let i = 0; i < 40; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot';
+    const size = Math.random() * 3 + 1.5;
+    d.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;opacity:${(Math.random()*0.1+0.04)};`;
+    bg.appendChild(d);
+  }
+  setTimeout(() => { document.getElementById('p1').style.width = '60%'; }, 300);
+</script>
+</body>
+</html>
