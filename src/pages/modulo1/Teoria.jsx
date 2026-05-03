@@ -4,6 +4,18 @@ import Background from '../../components/Background'
 import Navbar from '../../components/Navbar'
 import { atomSVG } from '../../utils/drawAtom'
 
+// ── Camadas com valores CORRETOS ──────────────────────────────────────────────
+// K=2, L=8, M=18, N=32, O=32, P=18, Q=8
+const CAMADAS = [
+  { letra:'K', max:2,  cor:'#f87171', n:'1ª camada' },
+  { letra:'L', max:8,  cor:'#fb923c', n:'2ª camada' },
+  { letra:'M', max:18, cor:'#facc15', n:'3ª camada' },
+  { letra:'N', max:32, cor:'#4ade80', n:'4ª camada' },
+  { letra:'O', max:32, cor:'#34d399', n:'5ª camada' },
+  { letra:'P', max:18, cor:'#60a5fa', n:'6ª camada' },
+  { letra:'Q', max:8,  cor:'#a78bfa', n:'7ª camada' },
+]
+
 const PERIODIC = [
   {sym:'H', z:1,  name:'Hidrogênio', type:'dim',     col:1,  row:1},
   {sym:'He',z:2,  name:'Hélio',      type:'dim',     col:18, row:1},
@@ -97,132 +109,95 @@ const PERIODIC = [
   {sym:'Og',z:118,name:'Oganessônio',type:'dim',     col:18, row:7},
 ]
 
-// Átomos para o explorador do Passo 2
-const SHELL_ATOMS = [
-  { sym:'Na', z:11, layers:[2,8,1],   type:'metal',    name:'Sódio',    grupo:'IA',   val:1, ion:'Na⁺', perde:true,
-    desc:'O sódio (Grupo IA) tem 1 elétron na camada de valência. Ao perdê-lo, a camada anterior (com 8 e⁻) torna-se a nova camada de valência, formando Na⁺ com configuração eletrônica estável.' },
-  { sym:'Cl', z:17, layers:[2,8,7],   type:'nonmetal', name:'Cloro',    grupo:'VIIA', val:7, ion:'Cl⁻', perde:false,
-    desc:'O cloro (Grupo VIIA) tem 7 elétrons na camada de valência — falta apenas 1 para completar o octeto. Ao ganhar 1 e⁻, atinge a configuração estável de 8 elétrons e forma o ânion Cl⁻.' },
-  { sym:'Ca', z:20, layers:[2,8,8,2], type:'metal',    name:'Cálcio',   grupo:'IIA',  val:2, ion:'Ca²⁺', perde:true,
-    desc:'O cálcio (Grupo IIA) tem 2 elétrons na camada de valência. Ao perdê-los, a camada anterior (com 8 e⁻) torna-se a nova camada de valência, estabilizando o átomo como Ca²⁺.' },
-  { sym:'O',  z:8,  layers:[2,6],     type:'nonmetal', name:'Oxigênio', grupo:'VIA',  val:6, ion:'O²⁻', perde:false,
-    desc:'O oxigênio (Grupo VIA) tem 6 elétrons na camada de valência e precisa de 2 para completar o octeto. Ao ganhar 2 e⁻, forma o ânion O²⁻ com configuração eletrônica estável.' },
-  { sym:'Mg', z:12, layers:[2,8,2],   type:'metal',    name:'Magnésio', grupo:'IIA',  val:2, ion:'Mg²⁺', perde:true,
-    desc:'O magnésio (Grupo IIA) tem 2 elétrons na camada de valência. Com essa configuração, perde ambos facilmente, expondo a camada anterior completa com 8 e⁻ e formando o cátion Mg²⁺.' },
-  { sym:'F',  z:9,  layers:[2,7],     type:'nonmetal', name:'Flúor',    grupo:'VIIA', val:7, ion:'F⁻', perde:false,
-    desc:'O flúor é o elemento mais eletronegativo da tabela periódica (Grupo VIIA). Com 7 elétrons na camada de valência, precisa de apenas 1 para atingir o octeto. Forma o ânion F⁻ com facilidade.' },
-]
-
-// Exemplo interativo de distribuição — o aluno escolhe o elemento
 const DISTRIB_EXAMPLES = [
-  { sym:'Na', z:11, layers:[2,8,1],  type:'metal',    name:'Sódio',
-    steps:['Z = 11 → 11 elétrons para distribuir','Camada K: comporta até 2 → coloca 2 (restam 9)','Camada L: comporta até 8 → coloca 8 (resta 1)','Camada M: coloca o 1 restante','Resultado: [2, 8, 1] → valência = 1 e⁻'] },
-  { sym:'Cl', z:17, layers:[2,8,7],  type:'nonmetal', name:'Cloro',
-    steps:['Z = 17 → 17 elétrons para distribuir','Camada K: comporta até 2 → coloca 2 (restam 15)','Camada L: comporta até 8 → coloca 8 (restam 7)','Camada M: coloca os 7 restantes','Resultado: [2, 8, 7] → valência = 7 e⁻'] },
-  { sym:'Ca', z:20, layers:[2,8,8,2],type:'metal',    name:'Cálcio',
-    steps:['Z = 20 → 20 elétrons para distribuir','Camada K: comporta até 2 → coloca 2 (restam 18)','Camada L: comporta até 8 → coloca 8 (restam 10)','Camada M: comporta até 8 → coloca 8 (restam 2)','Camada N: coloca os 2 restantes','Resultado: [2, 8, 8, 2] → valência = 2 e⁻'] },
-  { sym:'O',  z:8,  layers:[2,6],    type:'nonmetal', name:'Oxigênio',
-    steps:['Z = 8 → 8 elétrons para distribuir','Camada K: comporta até 2 → coloca 2 (restam 6)','Camada L: coloca os 6 restantes','Resultado: [2, 6] → valência = 6 e⁻'] },
-  { sym:'Mg', z:12, layers:[2,8,2],  type:'metal',    name:'Magnésio',
-    steps:['Z = 12 → 12 elétrons para distribuir','Camada K: comporta até 2 → coloca 2 (restam 10)','Camada L: comporta até 8 → coloca 8 (restam 2)','Camada M: coloca os 2 restantes','Resultado: [2, 8, 2] → valência = 2 e⁻'] },
+  { sym:'Na', z:11, layers:[2,8,1],   type:'metal',    name:'Sódio',
+    steps:['Z = 11 → 11 elétrons para distribuir','K (máx. 2) → coloca 2 (restam 9)','L (máx. 8) → coloca 8 (resta 1)','M → coloca o 1 restante','Resultado: [2, 8, 1] → valência = 1 e⁻'] },
+  { sym:'Cl', z:17, layers:[2,8,7],   type:'nonmetal', name:'Cloro',
+    steps:['Z = 17 → 17 elétrons para distribuir','K (máx. 2) → coloca 2 (restam 15)','L (máx. 8) → coloca 8 (restam 7)','M → coloca os 7 restantes','Resultado: [2, 8, 7] → valência = 7 e⁻'] },
+  { sym:'Ca', z:20, layers:[2,8,8,2], type:'metal',    name:'Cálcio',
+    steps:['Z = 20 → 20 elétrons para distribuir','K (máx. 2) → coloca 2 (restam 18)','L (máx. 8) → coloca 8 (restam 10)','M (máx. 18) → coloca 8* (restam 2)','N → coloca os 2 restantes','Resultado: [2, 8, 8, 2] → valência = 2 e⁻','* No EM, M recebe máx. 8 antes de abrir nova camada'] },
+  { sym:'O',  z:8,  layers:[2,6],     type:'nonmetal', name:'Oxigênio',
+    steps:['Z = 8 → 8 elétrons para distribuir','K (máx. 2) → coloca 2 (restam 6)','L → coloca os 6 restantes','Resultado: [2, 6] → valência = 6 e⁻'] },
+  { sym:'Mg', z:12, layers:[2,8,2],   type:'metal',    name:'Magnésio',
+    steps:['Z = 12 → 12 elétrons para distribuir','K (máx. 2) → coloca 2 (restam 10)','L (máx. 8) → coloca 8 (restam 2)','M → coloca os 2 restantes','Resultado: [2, 8, 2] → valência = 2 e⁻'] },
 ]
 
-// Cards clicáveis do Passo 1
 const INFO_CARDS = [
   {
-    id:'z',
+    id:'z', color:'var(--text2)', borderColor:'var(--border2)', bgActive:'rgba(255,255,255,0.05)',
     icon:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>,
-    label:'Número Atômico (Z)',
-    shortText:'Identifica o elemento e define sua estrutura eletrônica.',
-    color:'var(--text2)', borderColor:'var(--border2)', bgActive:'rgba(255,255,255,0.05)',
-    detail:{
-      title:'O que é o Número Atômico?',
-      text:'O número atômico (Z) indica a quantidade de prótons no núcleo do átomo. Em um átomo neutro, Z também corresponde ao número de elétrons. É o número que aparece no canto superior esquerdo de cada elemento na tabela periódica.',
-      where:'O número atômico fica no canto superior esquerdo da célula de cada elemento na tabela periódica. Quanto maior o Z, mais prótons no núcleo e mais elétrons o átomo possui.',
-      exampleLabel:'Exemplo: Sódio (Na)', exLayers:[2,8,1], exType:'metal', exSym:'Na',
-      lines:['Z = 11 → 11 prótons no núcleo','11 elétrons no átomo neutro','Distribuição: K=2, L=8, M=1','Camada de valência: 1 elétron'],
-    }
+    label:'Número Atômico (Z)', shortText:'Identifica o elemento e define sua estrutura eletrônica.',
+    detail:{ title:'O que é o Número Atômico?', text:'O número atômico (Z) indica a quantidade de prótons no núcleo. Em um átomo neutro, Z também é o número de elétrons. Aparece no canto superior esquerdo de cada elemento na tabela.', where:'Canto superior esquerdo da célula de cada elemento na tabela periódica.', exampleLabel:'Exemplo: Sódio (Na)', exLayers:[2,8,1], exType:'metal', exSym:'Na', lines:['Z = 11 → 11 prótons no núcleo','11 elétrons no átomo neutro','Distribuição: K=2, L=8, M=1','Camada de valência: 1 elétron'] }
   },
   {
-    id:'cat',
+    id:'cat', color:'var(--orange)', borderColor:'var(--orange-border)', bgActive:'var(--orange-dim)',
     icon:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>,
-    label:'Cátions (+)',
-    shortText:'Metais que perdem elétrons e ficam com carga positiva.',
-    color:'var(--orange)', borderColor:'var(--orange-border)', bgActive:'var(--orange-dim)',
-    detail:{
-      title:'O que é um Cátion?',
-      text:'Um cátion é um íon com carga elétrica positiva. Ele se forma quando um átomo perde um ou mais elétrons, ficando com mais prótons do que elétrons. Os principais formadores de cátions são os metais dos Grupos IA, IIA e IIIA da tabela periódica.',
-      where:'Na tabela periódica, os metais ficam no lado esquerdo. Os Grupos IA (alcalinos) e IIA (alcalino-terrosos) são os que mais facilmente perdem elétrons e formam cátions.',
-      exampleLabel:'Exemplo: Na → Na⁺', exLayers:[2,8], exType:'metal', exSym:'Na⁺',
-      lines:['Na tem Z=11 → 11 prótons e 11 elétrons','Perde 1 elétron da camada de valência','Fica com 11 prótons e 10 elétrons','Carga resultante: +1 → cátion Na⁺'],
-    }
+    label:'Cátions (+)', shortText:'Metais que perdem elétrons e ficam com carga positiva.',
+    detail:{ title:'O que é um Cátion?', text:'Um cátion é um íon com carga positiva. Forma-se quando um átomo perde elétrons, ficando com mais prótons do que elétrons. Metais dos Grupos IA, IIA e IIIA são os principais formadores.', where:'Lado esquerdo da tabela periódica — Grupos IA (alcalinos) e IIA (alcalino-terrosos).', exampleLabel:'Exemplo: Na → Na⁺', exLayers:[2,8], exType:'metal', exSym:'Na⁺', lines:['Na tem Z=11 → 11 prótons e 11 elétrons','Perde 1 elétron da camada de valência','Fica com 11 prótons e 10 elétrons','Carga resultante: +1 → cátion Na⁺'] }
   },
   {
-    id:'ani',
+    id:'ani', color:'var(--blue)', borderColor:'var(--blue-border)', bgActive:'var(--blue-dim)',
     icon:<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><line x1="8" y1="12" x2="16" y2="12"/></svg>,
-    label:'Ânions (−)',
-    shortText:'Ametais que ganham elétrons e ficam com carga negativa.',
-    color:'var(--blue)', borderColor:'var(--blue-border)', bgActive:'var(--blue-dim)',
-    detail:{
-      title:'O que é um Ânion?',
-      text:'Um ânion é um íon com carga elétrica negativa. Ele se forma quando um átomo ganha um ou mais elétrons, ficando com mais elétrons do que prótons. Os principais formadores de ânions são os ametais dos Grupos VA, VIA e VIIA da tabela periódica.',
-      where:'Na tabela periódica, os ametais ficam no lado direito. Os Grupos VIA e VIIA são os que mais facilmente ganham elétrons para completar o octeto e formam ânions.',
-      exampleLabel:'Exemplo: Cl → Cl⁻', exLayers:[2,8,8], exType:'nonmetal', exSym:'Cl⁻',
-      lines:['Cl tem Z=17 → 17 prótons e 17 elétrons','Ganha 1 elétron para completar o octeto','Fica com 17 prótons e 18 elétrons','Carga resultante: −1 → ânion Cl⁻'],
-    }
+    label:'Ânions (−)', shortText:'Ametais que ganham elétrons e ficam com carga negativa.',
+    detail:{ title:'O que é um Ânion?', text:'Um ânion é um íon com carga negativa. Forma-se quando um átomo ganha elétrons, ficando com mais elétrons do que prótons. Ametais dos Grupos VA, VIA e VIIA são os principais formadores.', where:'Lado direito da tabela periódica — Grupos VIA e VIIA ganham elétrons mais facilmente.', exampleLabel:'Exemplo: Cl → Cl⁻', exLayers:[2,8,8], exType:'nonmetal', exSym:'Cl⁻', lines:['Cl tem Z=17 → 17 prótons e 17 elétrons','Ganha 1 elétron para completar o octeto','Fica com 17 prótons e 18 elétrons','Carga resultante: −1 → ânion Cl⁻'] }
   },
 ]
 
-function AtomDiagram({ sym, layers, type, size=140 }) {
+// Diagrama com camadas coloridas
+function AtomDiagram({ sym, layers, type, size=160 }) {
   const ref = useRef(null)
-  useEffect(() => { if (ref.current) ref.current.innerHTML = atomSVG(sym, layers, type, size, size) }, [sym, layers, type, size])
-  return <svg ref={ref} width={size} height={size} viewBox={`0 0 ${size} ${size}`} />
+  useEffect(() => {
+    if (!ref.current) return
+    const cx=size/2, cy=size/2, r0=size*0.13, maxR=size/2-6
+    const step=(maxR-r0)/Math.max(layers.length,1)
+    const tc = type==='metal'?'#f0a742':'#3ee8c4'
+    let html=`<circle cx="${cx}" cy="${cy}" r="${r0}" fill="${tc}20" stroke="${tc}" stroke-width="1.5"/>
+      <text x="${cx}" y="${cy+5}" text-anchor="middle" font-size="${Math.round(r0*0.75)}" font-weight="800" fill="${tc}" font-family="Segoe UI,sans-serif">${sym}</text>`
+    layers.forEach((n,i)=>{
+      const r=r0+step*(i+1)
+      const cc=CAMADAS[i]?.cor||'#8888aa'
+      html+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${cc}55" stroke-width="1.5"/>`
+      for(let j=0;j<n;j++){
+        const a=(j/n)*2*Math.PI-Math.PI/2
+        const ex=cx+r*Math.cos(a), ey=cy+r*Math.sin(a)
+        const isLast=i===layers.length-1
+        html+=`<circle cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" r="${isLast?4:3}" fill="${isLast?tc:cc}" opacity="${isLast?1:0.75}"/>`
+      }
+    })
+    ref.current.innerHTML=html
+  },[sym,layers,type,size])
+  return <svg ref={ref} width={size} height={size} viewBox={`0 0 ${size} ${size}`}/>
 }
 
-function Tooltip({ elem, pos }) {
-  if (!elem) return null
-  const color = elem.type==='metal'?'var(--orange)':elem.type==='nonmetal'?'var(--blue)':'var(--text3)'
-  const tagBg = elem.type==='metal'?'var(--orange-dim)':elem.type==='nonmetal'?'var(--blue-dim)':'rgba(255,255,255,0.06)'
-  const typeLabel = {metal:'Metal',nonmetal:'Ametal',dim:'Outro',lan:''}[elem.type]||''
-  return (
+function Tooltip({elem,pos}){
+  if(!elem)return null
+  const color=elem.type==='metal'?'var(--orange)':elem.type==='nonmetal'?'var(--blue)':'var(--text3)'
+  const tagBg=elem.type==='metal'?'var(--orange-dim)':elem.type==='nonmetal'?'var(--blue-dim)':'rgba(255,255,255,0.06)'
+  const label={metal:'Metal',nonmetal:'Ametal',dim:'Outro',lan:''}[elem.type]||''
+  return(
     <div style={{position:'fixed',left:pos.x+14,top:pos.y-10,background:'#1e2d45',border:'1px solid var(--border2)',borderRadius:10,padding:'9px 12px',fontSize:12,zIndex:1000,pointerEvents:'none',minWidth:140,animation:'popIn 0.1s ease'}}>
       <div style={{fontSize:17,fontWeight:800,color}}>{elem.sym}</div>
-      <div style={{color:'var(--text2)',fontSize:11,marginBottom:typeLabel?3:0}}>{elem.name} · Z={elem.z}</div>
-      {typeLabel&&<span style={{fontSize:10,fontWeight:700,padding:'2px 8px',borderRadius:5,background:tagBg,color}}>{typeLabel}</span>}
+      <div style={{color:'var(--text2)',fontSize:11,marginBottom:label?3:0}}>{elem.name} · Z={elem.z}</div>
+      {label&&<span style={{fontSize:10,fontWeight:700,padding:'2px 8px',borderRadius:5,background:tagBg,color}}>{label}</span>}
     </div>
   )
 }
 
-function PeriodicTable() {
-  const [tooltip, setTooltip] = useState(null)
-  const [pos, setPos] = useState({x:0,y:0})
-  const cells = {}
-  PERIODIC.forEach(e => { cells[`${e.row}-${e.col}`] = e })
-  const typeStyle = {
-    metal:    {background:'var(--orange-dim)',borderColor:'var(--orange-border)'},
-    nonmetal: {background:'var(--blue-dim)',  borderColor:'var(--blue-border)'},
-    dim:      {background:'rgba(255,255,255,0.04)',borderColor:'rgba(255,255,255,0.07)'},
-    lan:      {background:'rgba(167,139,250,0.08)',borderColor:'rgba(167,139,250,0.18)'},
+function PeriodicTable(){
+  const [tip,setTip]=useState(null)
+  const [pos,setPos]=useState({x:0,y:0})
+  const cells={}
+  PERIODIC.forEach(e=>{cells[`${e.row}-${e.col}`]=e})
+  const ts={metal:{background:'var(--orange-dim)',borderColor:'var(--orange-border)'},nonmetal:{background:'var(--blue-dim)',borderColor:'var(--blue-border)'},dim:{background:'rgba(255,255,255,0.04)',borderColor:'rgba(255,255,255,0.07)'},lan:{background:'rgba(167,139,250,0.08)',borderColor:'rgba(167,139,250,0.18)'}}
+  const sc={metal:'var(--orange)',nonmetal:'var(--blue)',dim:'var(--text3)',lan:'rgba(167,139,250,0.5)'}
+  const grid=[]
+  for(let r=1;r<=7;r++) for(let c=1;c<=18;c++){
+    const e=cells[`${r}-${c}`]
+    grid.push(<div key={`${r}-${c}`} style={{aspectRatio:'1',borderRadius:4,border:'1px solid transparent',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',cursor:e?.z?'pointer':'default',transition:'transform 0.1s,opacity 0.1s',...(e?ts[e.type]||ts.dim:{})}} onMouseEnter={e?.z?ev=>{setTip(e);setPos({x:ev.clientX,y:ev.clientY});ev.currentTarget.style.transform='scale(1.3)';ev.currentTarget.style.zIndex='10';ev.currentTarget.style.opacity='0.85'}:undefined} onMouseLeave={e?.z?ev=>{setTip(null);ev.currentTarget.style.transform='scale(1)';ev.currentTarget.style.zIndex='1';ev.currentTarget.style.opacity='1'}:undefined} onMouseMove={e?.z?ev=>setPos({x:ev.clientX,y:ev.clientY}):undefined}>
+      {e&&<><span style={{fontSize:6,color:'var(--text3)',lineHeight:1,alignSelf:'flex-start',padding:'2px 2px 0'}}>{e.z||''}</span><span style={{fontSize:11,fontWeight:700,lineHeight:1.1,color:sc[e.type]||'var(--text3)'}}>{e.sym}</span></>}
+    </div>)
   }
-  const symColor = {metal:'var(--orange)',nonmetal:'var(--blue)',dim:'var(--text3)',lan:'rgba(167,139,250,0.5)'}
-  const grid = []
-  for (let r=1;r<=7;r++) for (let c=1;c<=18;c++) {
-    const e = cells[`${r}-${c}`]
-    grid.push(
-      <div key={`${r}-${c}`}
-        style={{aspectRatio:'1',borderRadius:4,border:'1px solid transparent',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',cursor:e?.z?'pointer':'default',transition:'transform 0.1s,opacity 0.1s',...(e?typeStyle[e.type]||typeStyle.dim:{})}}
-        onMouseEnter={e?.z?ev=>{setTooltip(e);setPos({x:ev.clientX,y:ev.clientY});ev.currentTarget.style.transform='scale(1.3)';ev.currentTarget.style.zIndex='10';ev.currentTarget.style.opacity='0.85'}:undefined}
-        onMouseLeave={e?.z?ev=>{setTooltip(null);ev.currentTarget.style.transform='scale(1)';ev.currentTarget.style.zIndex='1';ev.currentTarget.style.opacity='1'}:undefined}
-        onMouseMove={e?.z?ev=>setPos({x:ev.clientX,y:ev.clientY}):undefined}
-      >
-        {e&&<>
-          <span style={{fontSize:6,color:'var(--text3)',lineHeight:1,alignSelf:'flex-start',padding:'2px 2px 0'}}>{e.z||''}</span>
-          <span style={{fontSize:11,fontWeight:700,lineHeight:1.1,color:symColor[e.type]||'var(--text3)'}}>{e.sym}</span>
-        </>}
-      </div>
-    )
-  }
-  return (
+  return(
     <div style={{background:'var(--card)',border:'1px solid var(--border2)',borderRadius:16,padding:'1rem',marginBottom:'1.2rem',overflowX:'auto'}}>
       <div style={{display:'grid',gridTemplateColumns:'repeat(18,1fr)',gap:2,minWidth:560}}>{grid}</div>
       <div style={{display:'flex',gap:'1.2rem',flexWrap:'wrap',marginTop:'1rem'}}>
@@ -232,14 +207,18 @@ function PeriodicTable() {
           </div>
         ))}
       </div>
-      <Tooltip elem={tooltip} pos={pos}/>
+      {/* Nota de simplificação — pedido pelo professor */}
+      <div style={{marginTop:'0.8rem',padding:'8px 12px',background:'rgba(255,255,255,0.04)',borderRadius:8,fontSize:11,color:'var(--text3)',borderLeft:'2px solid rgba(255,255,255,0.1)'}}>
+        ⚠ Esta é uma representação simplificada da tabela periódica, exibindo os elementos mais relevantes para o estudo de ligações iônicas.
+      </div>
+      <Tooltip elem={tip} pos={pos}/>
     </div>
   )
 }
 
-function SidebarStep({num,label,current,onClick}) {
+function SidebarStep({num,label,current,onClick}){
   const active=current===num, done=current>num
-  return (
+  return(
     <div onClick={onClick} style={{display:'flex',alignItems:'center',gap:10,padding:'10px 12px',borderRadius:10,cursor:'pointer',marginBottom:4,border:`1px solid ${active?'var(--teal-border)':'transparent'}`,background:active?'var(--teal-dim)':'transparent',opacity:done?0.7:1}}>
       <div style={{width:26,height:26,borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:12,fontWeight:700,flexShrink:0,border:`1.5px solid ${active?'var(--teal)':done?'var(--teal-border)':'var(--border2)'}`,background:active?'var(--teal)':done?'rgba(78,205,196,0.2)':'transparent',color:active?'#0a1628':done?'var(--teal)':'var(--text2)'}}>
         {done?'✓':num}
@@ -249,80 +228,36 @@ function SidebarStep({num,label,current,onClick}) {
   )
 }
 
-// ── Componente de distribuição eletrônica (teórico + visual) ─────────────────
-function DistribuicaoCamadas({ selAtom, setSelAtom }) {
-  const CAMADAS = [
-    { letra:'K', max:2,  cor:'#f87171', desc:'1ª camada — mais próxima do núcleo' },
-    { letra:'L', max:8,  cor:'#fb923c', desc:'2ª camada' },
-    { letra:'M', max:18, cor:'#facc15', desc:'3ª camada — máx. 18 elétrons' },
-    { letra:'N', max:18, cor:'#4ade80', desc:'4ª camada — máx. 18 elétrons' },
-    { letra:'O', max:8,  cor:'#34d399', desc:'5ª camada — máx. 8 elétrons' },
-    { letra:'P', max:6,  cor:'#60a5fa', desc:'6ª camada — máx. 6 elétrons' },
-    { letra:'Q', max:2,  cor:'#a78bfa', desc:'7ª camada — máx. 2 elétrons' },
-  ]
-
-  const filled = selAtom.layers
-
-  return (
+function DistribuicaoCamadas({selAtom,setSelAtom}){
+  return(
     <div style={{background:'var(--card)',border:'1px solid var(--border2)',borderRadius:16,padding:'1.5rem',marginBottom:'1.5rem'}}>
-
-      {/* Seletor */}
       <div style={{display:'flex',gap:8,marginBottom:'1.2rem',flexWrap:'wrap'}}>
         {DISTRIB_EXAMPLES.map(a=>(
-          <button key={a.sym} onClick={()=>setSelAtom(a)}
-            style={{padding:'6px 16px',borderRadius:8,border:`1px solid ${selAtom.sym===a.sym?(a.type==='metal'?'var(--orange-border)':'var(--blue-border)'):'var(--border2)'}`,background:selAtom.sym===a.sym?(a.type==='metal'?'var(--orange-dim)':'var(--blue-dim)'):'var(--card2)',color:selAtom.sym===a.sym?(a.type==='metal'?'var(--orange)':'var(--blue)'):'var(--text2)',fontSize:13,fontWeight:600,cursor:'pointer',transition:'all 0.15s'}}>
+          <button key={a.sym} onClick={()=>setSelAtom(a)} style={{padding:'6px 16px',borderRadius:8,border:`1px solid ${selAtom.sym===a.sym?(a.type==='metal'?'var(--orange-border)':'var(--blue-border)'):'var(--border2)'}`,background:selAtom.sym===a.sym?(a.type==='metal'?'var(--orange-dim)':'var(--blue-dim)'):'var(--card2)',color:selAtom.sym===a.sym?(a.type==='metal'?'var(--orange)':'var(--blue)'):'var(--text2)',fontSize:13,fontWeight:600,cursor:'pointer',transition:'all 0.15s'}}>
             {a.sym} (Z={a.z})
           </button>
         ))}
       </div>
-
       <div style={{display:'flex',gap:'2rem',flexWrap:'wrap',alignItems:'flex-start'}} key={selAtom.sym}>
-
-        {/* LADO TEÓRICO */}
         <div style={{flex:1,minWidth:240}}>
-          <div style={{fontSize:13,fontWeight:700,color:'var(--teal)',marginBottom:'1rem',letterSpacing:0.5}}>
-            Distribuição passo a passo — {selAtom.name} (Z={selAtom.z})
-          </div>
-
-          {/* Tabela de camadas */}
-          <div style={{background:'var(--card2)',borderRadius:12,overflow:'hidden',marginBottom:'1rem'}}>
-            <div style={{display:'grid',gridTemplateColumns:'40px 80px 80px 1fr',fontSize:11,fontWeight:700,color:'var(--text3)',padding:'8px 14px',borderBottom:'1px solid var(--border)',textTransform:'uppercase',letterSpacing:1}}>
-              <span>Cam.</span><span>Letra</span><span>Máx.</span><span>Regra (EM)</span>
-            </div>
-            {CAMADAS.map((c,i)=>(
-              <div key={c.letra} style={{display:'grid',gridTemplateColumns:'40px 80px 80px 1fr',padding:'8px 14px',borderBottom:i<CAMADAS.length-1?'1px solid var(--border)':'none',background:filled[i]!=null?'rgba(255,255,255,0.02)':'transparent',opacity:filled[i]!=null?1:0.35}}>
-                <span style={{fontSize:13,fontWeight:700,color:c.cor}}>{i+1}ª</span>
-                <span style={{fontSize:13,fontWeight:700,color:c.cor}}>{c.letra}</span>
-                <span style={{fontSize:13,color:'var(--text2)'}}>{c.max} e⁻</span>
-                <span style={{fontSize:12,color:'var(--text3)'}}>{c.desc}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* Passos */}
-          <div style={{fontSize:12,fontWeight:700,color:'var(--text3)',letterSpacing:1,textTransform:'uppercase',marginBottom:8}}>Como distribuir</div>
+          <div style={{fontSize:13,fontWeight:700,color:'var(--teal)',marginBottom:'1rem'}}>{selAtom.name} (Z={selAtom.z}) — passo a passo</div>
           <div style={{display:'flex',flexDirection:'column',gap:6}}>
             {selAtom.steps.map((s,i)=>(
-              <div key={i} style={{display:'flex',gap:10,alignItems:'flex-start',animation:`fadeIn 0.2s ease ${i*0.05}s both`}}>
+              <div key={i} style={{display:'flex',gap:10,alignItems:'flex-start'}}>
                 <div style={{width:22,height:22,borderRadius:'50%',background:'var(--teal-dim)',border:'1px solid var(--teal-border)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:700,color:'var(--teal)',flexShrink:0,marginTop:1}}>{i+1}</div>
                 <span style={{fontSize:13,color:i===selAtom.steps.length-1?'var(--text)':'var(--text2)',lineHeight:1.5,fontWeight:i===selAtom.steps.length-1?700:400}}>{s}</span>
               </div>
             ))}
           </div>
         </div>
-
-        {/* LADO VISUAL */}
-        <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:12}}>
-          <div style={{fontSize:12,fontWeight:700,color:'var(--text3)',letterSpacing:1,textTransform:'uppercase'}}>Diagrama</div>
+        <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:10}}>
           <AtomDiagram sym={selAtom.sym} layers={selAtom.layers} type={selAtom.type} size={180}/>
-
-          {/* Legenda das camadas */}
-          <div style={{display:'flex',flexDirection:'column',gap:6,width:'100%'}}>
-            {filled.map((n,i)=>(
+          <div style={{display:'flex',flexDirection:'column',gap:5,width:'100%'}}>
+            {selAtom.layers.map((n,i)=>(
               <div key={i} style={{display:'flex',alignItems:'center',gap:8}}>
                 <div style={{width:12,height:12,borderRadius:'50%',background:CAMADAS[i]?.cor||'var(--teal)',flexShrink:0}}/>
-                <span style={{fontSize:12,color:'var(--text2)'}}>Camada {CAMADAS[i]?.letra||'?'}: <strong style={{color:'var(--text)'}}>{n} e⁻</strong></span>
-                {i===filled.length-1 && <span style={{fontSize:10,fontWeight:700,padding:'1px 7px',borderRadius:5,background:selAtom.type==='metal'?'var(--orange-dim)':'var(--blue-dim)',color:selAtom.type==='metal'?'var(--orange)':'var(--blue)',border:`1px solid ${selAtom.type==='metal'?'var(--orange-border)':'var(--blue-border)'}`}}>valência</span>}
+                <span style={{fontSize:12,color:'var(--text2)'}}>Camada {CAMADAS[i]?.letra}: <strong style={{color:CAMADAS[i]?.cor||'var(--text)'}}>{n} e⁻</strong></span>
+                {i===selAtom.layers.length-1&&<span style={{fontSize:10,fontWeight:700,padding:'1px 7px',borderRadius:5,background:selAtom.type==='metal'?'var(--orange-dim)':'var(--blue-dim)',color:selAtom.type==='metal'?'var(--orange)':'var(--blue)',border:`1px solid ${selAtom.type==='metal'?'var(--orange-border)':'var(--blue-border)'}`}}>valência</span>}
               </div>
             ))}
           </div>
@@ -332,56 +267,40 @@ function DistribuicaoCamadas({ selAtom, setSelAtom }) {
   )
 }
 
-export default function Teoria() {
-  const navigate = useNavigate()
-  const [step, setStep] = useState(1)
-  const [activeCard, setActiveCard] = useState(null)
-  const [selAtom, setSelAtom] = useState(DISTRIB_EXAMPLES[0])
-  const [selExplorer, setSelExplorer] = useState(SHELL_ATOMS[0])
+export default function Teoria(){
+  const navigate=useNavigate()
+  const [step,setStep]=useState(1)
+  const [activeCard,setActiveCard]=useState(null)
+  const [selAtom,setSelAtom]=useState(DISTRIB_EXAMPLES[0])
+  const openCard=INFO_CARDS.find(c=>c.id===activeCard)
 
-  const openCard = INFO_CARDS.find(c => c.id === activeCard)
-
-  return (
+  return(
     <>
-      <Background />
-      <Navbar />
+      <Background/><Navbar/>
       <div style={{display:'flex',paddingTop:56,minHeight:'100vh',position:'relative',zIndex:1}}>
-
         <aside style={{width:220,flexShrink:0,padding:'2rem 1rem',borderRight:'1px solid var(--border)',position:'sticky',top:56,height:'calc(100vh - 56px)',overflowY:'auto'}}>
           <div style={{fontSize:10,letterSpacing:'1.5px',fontWeight:700,color:'var(--text3)',textTransform:'uppercase',marginBottom:'1rem'}}>Progresso</div>
-          <SidebarStep num={1} label="Tabela Periódica"        current={step} onClick={()=>setStep(1)}/>
+          <SidebarStep num={1} label="Tabela Periódica" current={step} onClick={()=>setStep(1)}/>
           <SidebarStep num={2} label="Distribuição Eletrônica" current={step} onClick={()=>setStep(2)}/>
         </aside>
-
         <main style={{flex:1,padding:'2.5rem 2rem',maxWidth:900,overflowY:'auto'}}>
 
-          {/* ── PASSO 1: Tabela Periódica + cards clicáveis ── */}
           {step===1&&(
             <div style={{animation:'fadeIn 0.3s ease'}}>
               <div style={si}>Passo 1 de 2</div>
               <h1 style={h1}>Tabela Periódica</h1>
-              <p style={intro}>
-                A posição de um elemento na tabela periódica determina seu comportamento nas ligações iônicas.
-                <strong style={{color:'var(--orange)'}}> Metais</strong> (esquerda) tendem a perder elétrons e
-                <strong style={{color:'var(--blue)'}}> ametais</strong> (direita) tendem a ganhar.
-                Passe o mouse sobre qualquer elemento para ver sua classificação.
-              </p>
-
+              <p style={intro}>A posição de um elemento na tabela periódica determina seu comportamento nas ligações iônicas. <strong style={{color:'var(--orange)'}}>Metais</strong> (esquerda) tendem a perder elétrons e <strong style={{color:'var(--blue)'}}>ametais</strong> (direita) tendem a ganhar. Passe o mouse sobre qualquer elemento para ver sua classificação.</p>
               <PeriodicTable/>
 
-              {/* Cards clicáveis */}
               <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:12,marginBottom:openCard?0:'1.5rem'}}>
                 {INFO_CARDS.map(card=>{
-                  const isActive = activeCard===card.id
-                  return (
-                    <button key={card.id} onClick={()=>setActiveCard(prev=>prev===card.id?null:card.id)}
+                  const isActive=activeCard===card.id
+                  return(
+                    <button key={card.id} onClick={()=>setActiveCard(p=>p===card.id?null:card.id)}
                       style={{background:isActive?card.bgActive:'var(--card)',border:`1px solid ${isActive?card.borderColor:'var(--border2)'}`,borderRadius:isActive?'14px 14px 0 0':14,padding:'1.1rem',cursor:'pointer',textAlign:'left',transition:'all 0.2s',outline:'none',position:'relative'}}
                       onMouseEnter={e=>{if(!isActive){e.currentTarget.style.borderColor=card.borderColor;e.currentTarget.style.background=card.bgActive}}}
-                      onMouseLeave={e=>{if(!isActive){e.currentTarget.style.borderColor='var(--border2)';e.currentTarget.style.background='var(--card)'}}}
-                    >
-                      <div style={{width:34,height:34,borderRadius:9,background:isActive?'rgba(255,255,255,0.1)':'rgba(255,255,255,0.05)',display:'flex',alignItems:'center',justifyContent:'center',marginBottom:10,color:isActive?card.color:'var(--text3)'}}>
-                        {card.icon}
-                      </div>
+                      onMouseLeave={e=>{if(!isActive){e.currentTarget.style.borderColor='var(--border2)';e.currentTarget.style.background='var(--card)'}}}>
+                      <div style={{width:34,height:34,borderRadius:9,background:isActive?'rgba(255,255,255,0.1)':'rgba(255,255,255,0.05)',display:'flex',alignItems:'center',justifyContent:'center',marginBottom:10,color:isActive?card.color:'var(--text3)'}}>{card.icon}</div>
                       <div style={{fontSize:14,fontWeight:700,color:isActive?card.color:'var(--text)',marginBottom:5}}>{card.label}</div>
                       <div style={{fontSize:12,color:'var(--text2)',lineHeight:1.5}}>{card.shortText}</div>
                       <div style={{position:'absolute',bottom:10,right:12,fontSize:16,color:isActive?card.color:'var(--text3)',transition:'transform 0.2s',transform:isActive?'rotate(180deg)':'rotate(0deg)'}}>⌄</div>
@@ -390,7 +309,6 @@ export default function Teoria() {
                 })}
               </div>
 
-              {/* Painel expandido */}
               {openCard&&(
                 <div style={{background:openCard.bgActive,border:`1px solid ${openCard.borderColor}`,borderTop:'none',borderRadius:'0 0 14px 14px',padding:'1.5rem',marginBottom:'1.5rem',animation:'fadeIn 0.2s ease'}}>
                   <h3 style={{fontSize:16,fontWeight:700,color:openCard.color,marginBottom:10}}>{openCard.detail.title}</h3>
@@ -420,35 +338,26 @@ export default function Teoria() {
               )}
 
               <div style={{background:'var(--card2)',border:'1px solid var(--teal-border)',borderRadius:12,padding:'12px 16px',marginBottom:'1.5rem',fontSize:13,color:'var(--text2)',lineHeight:1.7}}>
-                <strong style={{color:'var(--teal)'}}>Atenção:</strong> existem exceções. O ferro (Fe) pode formar Fe²⁺ ou Fe³⁺ dependendo da ligação. Nesses casos usa-se algarismos romanos: <strong>cloreto de ferro (II)</strong> para FeCl₂ e <strong>cloreto de ferro (III)</strong> para FeCl₃.
+                <strong style={{color:'var(--teal)'}}>Atenção:</strong> existem exceções. O ferro (Fe) pode formar Fe²⁺ ou Fe³⁺ dependendo da ligação — são os metais de transição. Usa-se algarismos romanos: <strong>cloreto de ferro (II)</strong> para FeCl₂ e <strong>cloreto de ferro (III)</strong> para FeCl₃.
               </div>
-
               <button style={btnC} onClick={()=>setStep(2)}>Próximo →</button>
             </div>
           )}
 
-          {/* ── PASSO 2: Distribuição Eletrônica ── */}
           {step===2&&(
             <div style={{animation:'fadeIn 0.3s ease'}}>
               <div style={si}>Passo 2 de 2</div>
               <h1 style={h1}>Distribuição Eletrônica</h1>
-              <p style={intro}>
-                Os elétrons de um átomo se organizam em <strong>camadas</strong> ao redor do núcleo, preenchidas da mais interna para a mais externa.
-                Cada camada comporta um número máximo de elétrons. A <strong>camada de valência</strong> — a última a ser preenchida — é a que determina o comportamento do elemento nas ligações iônicas.
-              </p>
+              <p style={intro}>Os elétrons se organizam em <strong>camadas</strong> ao redor do núcleo, preenchidas da mais interna para a mais externa. A <strong>camada de valência</strong> — a última a ser preenchida — determina o comportamento do elemento nas ligações iônicas.</p>
 
-              {/* Regra geral — tabela + explicação */}
               <div style={{background:'var(--card)',border:'1px solid var(--border2)',borderRadius:16,padding:'1.5rem',marginBottom:'1.5rem'}}>
-                <div style={{fontSize:14,fontWeight:700,marginBottom:'1rem'}}>Regra de distribuição (Ensino Médio)</div>
-                <p style={{fontSize:13,color:'var(--text2)',lineHeight:1.7,marginBottom:'1rem'}}>
-                  Os elétrons preenchem as camadas em ordem, da mais interna para a mais externa, respeitando o número máximo de cada uma. No nível do Ensino Médio, usamos a seguinte simplificação para os primeiros elementos:
-                </p>
+                <div style={{fontSize:14,fontWeight:700,marginBottom:'1rem'}}>Capacidade máxima de cada camada</div>
                 <div style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)',gap:8,marginBottom:'1rem'}}>
-                  {[{letra:'K',max:2,cor:'#f87171',n:'1ª camada'},{letra:'L',max:8,cor:'#fb923c',n:'2ª camada'},{letra:'M',max:18,cor:'#facc15',n:'3ª camada'},{letra:'N',max:18,cor:'#4ade80',n:'4ª camada'},{letra:'O',max:8,cor:'#34d399',n:'5ª camada'},{letra:'P',max:6,cor:'#60a5fa',n:'6ª camada'},{letra:'Q',max:2,cor:'#a78bfa',n:'7ª camada'}].map(c=>(
-                    <div key={c.letra} style={{background:'var(--card2)',border:'1px solid var(--border2)',borderRadius:12,padding:'1rem',textAlign:'center'}}>
-                      <div style={{fontSize:26,fontWeight:800,color:c.cor,marginBottom:4}}>{c.letra}</div>
-                      <div style={{fontSize:13,fontWeight:700,marginBottom:2}}>máx. {c.max} e⁻</div>
-                      <div style={{fontSize:11,color:'var(--text3)'}}>{c.n}</div>
+                  {CAMADAS.map(c=>(
+                    <div key={c.letra} style={{background:'var(--card2)',border:`1px solid ${c.cor}44`,borderRadius:12,padding:'0.8rem',textAlign:'center'}}>
+                      <div style={{fontSize:22,fontWeight:800,color:c.cor,marginBottom:4}}>{c.letra}</div>
+                      <div style={{fontSize:13,fontWeight:700,marginBottom:2}}>máx. {c.max}</div>
+                      <div style={{fontSize:10,color:'var(--text3)'}}>{c.n}</div>
                     </div>
                   ))}
                 </div>
@@ -456,25 +365,28 @@ export default function Teoria() {
                   <strong style={{color:'var(--teal)'}}>Como distribuir:</strong> preencha as camadas em ordem (K → L → M → ...) até os elétrons acabarem. O que sobrar na última camada são os <strong>elétrons de valência</strong>.
                 </div>
                 <div style={{background:'rgba(167,139,250,0.08)',border:'1px solid rgba(167,139,250,0.2)',borderRadius:10,padding:'10px 14px',fontSize:12,color:'var(--text2)',lineHeight:1.6}}>
-                  <strong style={{color:'#a78bfa'}}>Observação:</strong> para os elementos estudados neste módulo (Z ≤ 20), as camadas usadas vão até no máximo a <strong>N</strong>. As camadas O, P e Q aparecem apenas em elementos mais pesados da tabela periódica.
+                  <strong style={{color:'#a78bfa'}}>Observação:</strong> para os elementos estudados neste módulo (Z ≤ 20), as camadas usadas vão até no máximo a <strong>N</strong>. As camadas O, P e Q aparecem apenas em elementos mais pesados.
                 </div>
               </div>
 
-              {/* Teórico + Visual interativo */}
-              <div style={{fontSize:14,fontWeight:700,color:'var(--text2)',marginBottom:'0.8rem'}}>
-                Experimente — selecione um elemento e veja a distribuição passo a passo:
-              </div>
+              <div style={{fontSize:14,fontWeight:700,color:'var(--text2)',marginBottom:'0.8rem'}}>Selecione um elemento e veja a distribuição passo a passo:</div>
               <DistribuicaoCamadas selAtom={selAtom} setSelAtom={setSelAtom}/>
 
-              {/* Cards de regra metal/ametal */}
-              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginBottom:'1.5rem'}}>
-                <div style={ruleCard}>
-                  <h4 style={{fontSize:14,fontWeight:700,marginBottom:8}}><span style={tagM}>Metais — Grupos IA, IIA, IIIA</span></h4>
-                  <p style={ruleText}>Têm 1, 2 ou 3 elétrons na camada de valência. É mais fácil <strong>perder</strong> esses poucos elétrons do que ganhar muitos para completar 8 (regra do octeto).</p>
-                </div>
-                <div style={ruleCard}>
-                  <h4 style={{fontSize:14,fontWeight:700,marginBottom:8}}><span style={tagN}>Ametais — Grupos VA, VIA, VIIA</span></h4>
-                  <p style={ruleText}>Têm 5, 6 ou 7 elétrons na camada de valência. É mais fácil <strong>ganhar</strong> os elétrons que faltam para completar 8 (regra do octeto).</p>
+              {/* Regra do Octeto em destaque — pedido pelo professor */}
+              <div style={{background:'var(--card)',border:'1px solid var(--teal-border)',borderRadius:16,padding:'1.5rem',marginBottom:'1.5rem'}}>
+                <h3 style={{fontSize:16,fontWeight:800,color:'var(--teal)',marginBottom:10}}>Regra do Octeto</h3>
+                <p style={{fontSize:13,color:'var(--text2)',lineHeight:1.7,marginBottom:12}}>
+                  Os átomos tendem a ganhar, perder ou compartilhar elétrons até atingir <strong style={{color:'var(--text)'}}>8 elétrons na camada de valência</strong> — a mesma configuração dos gases nobres, que são naturalmente estáveis.
+                </p>
+                <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+                  <div style={{background:'var(--card2)',border:'1px solid var(--orange-border)',borderRadius:12,padding:'1rem'}}>
+                    <div style={{fontSize:12,fontWeight:700,color:'var(--orange)',marginBottom:6}}>METAIS — Grupos IA, IIA, IIIA</div>
+                    <p style={{fontSize:13,color:'var(--text2)',lineHeight:1.6}}>Têm 1, 2 ou 3 elétrons na valência. <strong>Perdem</strong> esses elétrons para atingir 8 na camada anterior, formando cátions (+).</p>
+                  </div>
+                  <div style={{background:'var(--card2)',border:'1px solid var(--blue-border)',borderRadius:12,padding:'1rem'}}>
+                    <div style={{fontSize:12,fontWeight:700,color:'var(--blue)',marginBottom:6}}>AMETAIS — Grupos VA, VIA, VIIA</div>
+                    <p style={{fontSize:13,color:'var(--text2)',lineHeight:1.6}}>Têm 5, 6 ou 7 elétrons na valência. <strong>Ganham</strong> os que faltam para completar 8, formando ânions (−).</p>
+                  </div>
                 </div>
               </div>
 
@@ -491,12 +403,8 @@ export default function Teoria() {
   )
 }
 
-const si       = {fontSize:13,color:'var(--text2)',marginBottom:8}
-const h1       = {fontSize:26,fontWeight:800,marginBottom:'1rem'}
-const intro    = {fontSize:14,color:'var(--text2)',lineHeight:1.7,marginBottom:'1.2rem'}
-const ruleCard = {background:'var(--card)',border:'1px solid var(--border2)',borderRadius:14,padding:'1.2rem'}
-const ruleText = {fontSize:13,color:'var(--text2)',lineHeight:1.6}
-const tagM     = {fontSize:11,fontWeight:700,padding:'2px 8px',borderRadius:5,background:'var(--orange-dim)',color:'var(--orange)',marginRight:8}
-const tagN     = {fontSize:11,fontWeight:700,padding:'2px 8px',borderRadius:5,background:'var(--blue-dim)',color:'var(--blue)',marginRight:8}
-const btnC     = {display:'flex',alignItems:'center',gap:8,padding:'13px 28px',background:'var(--teal)',color:'#0a1628',fontSize:15,fontWeight:700,border:'none',borderRadius:12,cursor:'pointer'}
-const btnV     = {padding:'10px 20px',background:'transparent',border:'1px solid var(--border2)',color:'var(--text2)',fontSize:14,fontWeight:600,borderRadius:10,cursor:'pointer'}
+const si={fontSize:13,color:'var(--text2)',marginBottom:8}
+const h1={fontSize:26,fontWeight:800,marginBottom:'1rem'}
+const intro={fontSize:14,color:'var(--text2)',lineHeight:1.7,marginBottom:'1.2rem'}
+const btnC={display:'flex',alignItems:'center',gap:8,padding:'13px 28px',background:'var(--teal)',color:'#0a1628',fontSize:15,fontWeight:700,border:'none',borderRadius:12,cursor:'pointer'}
+const btnV={padding:'10px 20px',background:'transparent',border:'1px solid var(--border2)',color:'var(--text2)',fontSize:14,fontWeight:600,borderRadius:10,cursor:'pointer'}

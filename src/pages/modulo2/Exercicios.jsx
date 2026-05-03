@@ -37,7 +37,7 @@ const QUESTIONS = [
   },
 ]
 
-function Ex1({ onComplete }) {
+function Ex1({ onNext }) {
   const [dropped, setDropped] = useState(false)
   const [verified, setVerified] = useState(false)
   const [feedback, setFeedback] = useState(null)
@@ -49,7 +49,6 @@ function Ex1({ onComplete }) {
   function verify() {
     setVerified(true)
     setFeedback({ type:'ok', msg:'Correto! O Na perdeu 1 elétron (formou Na⁺) e o Cl ganhou esse elétron (formou Cl⁻). A atração entre Na⁺ e Cl⁻ forma a ligação iônica do NaCl. +10 XP' })
-    onComplete(true)
   }
 
   return (
@@ -85,23 +84,25 @@ function Ex1({ onComplete }) {
       <div style={{ display:'flex', justifyContent:'center', marginTop:'1rem' }}>
         {!verified
           ? <button style={{ ...btnCheck, opacity: dropped?1:0.4 }} disabled={!dropped} onClick={verify}>Verificar</button>
-          : <button style={btnNext} onClick={() => onComplete(true)}>Próximo Exercício →</button>
+          : <button style={btnNext} onClick={() => onNext(true)}>Próximo Exercício →</button>
         }
       </div>
     </div>
   )
 }
 
-function ExMC({ q, isLast, onComplete }) {
+function ExMC({ q, nextLabel, onNext }) {
   const [sel, setSel] = useState(null)
   const [verified, setVerified] = useState(false)
   const [feedback, setFeedback] = useState(null)
 
+  const [acertou, setAcertou] = useState(false)
+
   function verify() {
-    setVerified(true)
     const ok = sel === q.correct
+    setVerified(true)
+    setAcertou(ok)
     setFeedback({ type: ok?'ok':'er', msg: ok ? `${q.feedbackOk} +10 XP` : q.feedbackErr })
-    if (ok) onComplete(true)
   }
 
   function optStyle(i) {
@@ -128,7 +129,7 @@ function ExMC({ q, isLast, onComplete }) {
       <div style={{ display:'flex', justifyContent:'center', marginTop:'1rem' }}>
         {!verified
           ? <button style={{ ...btnCheck, opacity: sel!==null?1:0.4 }} disabled={sel===null} onClick={verify}>Verificar</button>
-          : <button style={btnNext} onClick={() => onComplete(true)}>{isLast ? 'Ver Resultado →' : 'Próximo Exercício →'}</button>
+          : <button style={btnNext} onClick={() => onNext(acertou)}>{nextLabel}</button>
         }
       </div>
     </div>
@@ -161,9 +162,9 @@ export default function Exercicios() {
           <ProgressDots total={3} current={exAtual} />
         </div>
         <div style={card}>
-          {exAtual===0 && <Ex1 onComplete={ok=>goNext(ok)} />}
-          {exAtual===1 && <ExMC key="q1" q={QUESTIONS[0]} isLast={false} onComplete={ok=>goNext(ok)} />}
-          {exAtual===2 && <ExMC key="q2" q={QUESTIONS[1]} isLast={true}  onComplete={ok=>goNext(ok)} />}
+          {exAtual===0 && <Ex1 onNext={goNext} />}
+          {exAtual===1 && <ExMC key="q1" q={QUESTIONS[0]} nextLabel="Próximo Exercício →" onNext={goNext} />}
+          {exAtual===2 && <ExMC key="q2" q={QUESTIONS[1]} nextLabel="Ver Resultado →" onNext={goNext} />}
         </div>
       </div>
     </>

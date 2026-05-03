@@ -26,7 +26,7 @@ function AtomDiagram({sym,layers,type,size=160}) {
   return <svg ref={ref} width={size} height={size} viewBox={`0 0 ${size} ${size}`}/>
 }
 
-function Ex1({onComplete}) {
+function Ex1({onNext}) {
   const [selCat,setSelCat]=useState(null)
   const [selAni,setSelAni]=useState(null)
   const [result,setResult]=useState(null)
@@ -53,7 +53,6 @@ function Ex1({onComplete}) {
     setVerified(true)
     if(ok){
       setFeedback({type:'ok',msg:'Correto! Ca²⁺ (+2) + O²⁻ (−2) → soma = 0. A fórmula é CaO (óxido de cálcio). As cargas se cancelam perfeitamente sem precisar de índices. +10 XP'})
-      onComplete(true)
     } else {
       setFeedback({type:'er',msg:`Para formar o CaO precisamos de Ca²⁺ (cátion, +2) e O²⁻ (ânion, −2). Você selecionou ${selCat?.ion||'?'} e ${selAni?.ion||'?'}. A soma das cargas deve ser zero.`})
     }
@@ -104,14 +103,14 @@ function Ex1({onComplete}) {
       <div style={{display:'flex',justifyContent:'center',marginTop:'1rem'}}>
         {!verified
           ?<button style={{...btnCheck,opacity:result?1:0.4}} disabled={!result} onClick={verify}>Verificar</button>
-          :<button style={btnNext} onClick={()=>onComplete(true)}>Próximo Exercício →</button>
+          :<button style={btnNext} onClick={()=>onNext(true)}>Próximo Exercício →</button>
         }
       </div>
     </div>
   )
 }
 
-function Ex2({onComplete}){
+function Ex2({onNext}){
   const opts=['Cloreto de magnésio','Óxido de magnésio','Fluoreto de cloro','Sulfeto de cálcio']
   const correct=0
   const [sel,setSel]=useState(null)
@@ -123,7 +122,6 @@ function Ex2({onComplete}){
     const ok=sel===correct
     if(ok){
       setFeedback({type:'ok',msg:'Correto! Pela regra IUPAC: ânion primeiro (Cl⁻ = cloreto) + "de" + cátion (Mg²⁺ = magnésio) → Cloreto de magnésio. +10 XP'})
-      onComplete(true)
     } else {
       setFeedback({type:'er',msg:'Regra IUPAC: escreva o ânion primeiro com sufixo -eto/-ido, depois "de", depois o cátion. Cl⁻ → cloreto · Mg²⁺ → magnésio → Cloreto de magnésio.'})
     }
@@ -154,14 +152,14 @@ function Ex2({onComplete}){
       <div style={{display:'flex',justifyContent:'center',marginTop:'1rem'}}>
         {!verified
           ?<button style={{...btnCheck,opacity:sel!==null?1:0.4}} disabled={sel===null} onClick={verify}>Verificar</button>
-          :<button style={btnNext} onClick={()=>onComplete(true)}>Próximo Exercício →</button>
+          :<button style={btnNext} onClick={()=>onNext(true)}>Próximo Exercício →</button>
         }
       </div>
     </div>
   )
 }
 
-function Ex3({onComplete}){
+function Ex3({onNext}){
   const choices=['Oxigênio (O, Z=8)','Enxofre (S, Z=16)','Selênio (Se, Z=34)','Cloro (Cl, Z=17)']
   const correct=1
   const [sel,setSel]=useState(null)
@@ -172,7 +170,7 @@ function Ex3({onComplete}){
   function verify(){
     setVerified(true)
     const ok=sel===correct
-    if(ok){setShowSym(true);setFeedback({type:'ok',msg:'Correto! A camada externa tem 6 elétrons. Contando a distribuição: K=2, L=8, M=6 → total 16 → Z=16 → Enxofre (S). Como ametal com 6 e⁻ de valência, forma o ânion S²⁻. +10 XP'});onComplete(true)}
+    if(ok){setShowSym(true);setFeedback({type:'ok',msg:'Correto! A camada externa tem 6 elétrons. Contando a distribuição: K=2, L=8, M=6 → total 16 → Z=16 → Enxofre (S). Como ametal com 6 e⁻ de valência, forma o ânion S²⁻. +10 XP'})}
     else{setFeedback({type:'er',msg:'Dica: some as camadas — K=2, L=8, M=6 → 2+8+6=16 elétrons → Z=16 → Enxofre (S). O oxigênio tem apenas 2 camadas [2,6], o selênio tem 4 camadas.'})}
   }
 
@@ -197,7 +195,7 @@ function Ex3({onComplete}){
       <div style={{display:'flex',justifyContent:'center',marginTop:'1rem'}}>
         {!verified
           ?<button style={{...btnCheck,opacity:sel!==null?1:0.4}} disabled={sel===null} onClick={verify}>Verificar</button>
-          :<button style={btnNext} onClick={()=>onComplete(true)}>Ver Resultado →</button>
+          :<button style={btnNext} onClick={()=>onNext(verified&&feedback?.type==='ok')}>Ver Resultado →</button>
         }
       </div>
     </div>
@@ -230,9 +228,9 @@ export default function Exercicios(){
           <ProgressDots total={3} current={exAtual}/>
         </div>
         <div style={card}>
-          {exAtual===0&&<Ex1 onComplete={ok=>goNext(ok)}/>}
-          {exAtual===1&&<Ex2 onComplete={ok=>goNext(ok)}/>}
-          {exAtual===2&&<Ex3 onComplete={ok=>goNext(ok)}/>}
+          {exAtual===0&&<Ex1 onNext={goNext}/>}
+          {exAtual===1&&<Ex2 onNext={goNext}/>}
+          {exAtual===2&&<Ex3 onNext={goNext}/>}
         </div>
       </div>
     </>

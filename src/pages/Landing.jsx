@@ -38,14 +38,14 @@ export default function Landing() {
     {
       icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
       color:'#f0a742', bg:'rgba(240,167,66,0.12)', border:'rgba(240,167,66,0.28)',
-      title:'XP e gamificação',
-      desc:'Pontos, contagem de dias consecutivos e quiz final.',
+      title:'XP e aprendizado interativo',
+      desc:'Pontos, badges por módulo, streak de dias consecutivos e quiz final com timer.',
     },
     {
       icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
       color:'#f06e7a', bg:'rgba(240,110,122,0.1)', border:'rgba(240,110,122,0.28)',
       title:'Feedback imediato',
-      desc:'Cada resposta traz explicação detalhada — acertos e erros têm feedback instantâneo.',
+      desc:'Cada resposta traz explicação detalhada — acertos e erros têm retorno educativo instantâneo.',
     },
     {
       icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>,
@@ -66,7 +66,7 @@ export default function Landing() {
     { num:'01', title:'Identificação de Íons',   desc:'Metais, ametais e tabela periódica', c:'v' },
     { num:'02', title:'Ligações Iônicas',         desc:'Transferência de elétrons',          c:'m' },
     { num:'03', title:'Fórmulas e Nomenclatura', desc:'Balanceamento e regras IUPAC',        c:'a' },
-    { num:'04', title:'Desafio Final',            desc:'Quiz final sobre todos os assuntos',            c:'r' },
+    { num:'04', title:'Desafio Final',            desc:'Quiz com timer e 3 fases',            c:'r' },
   ]
 
   const modColors = {
@@ -140,7 +140,7 @@ export default function Landing() {
           </span>{' '}de forma interativa
         </h1>
         <p style={s.heroP}>
-          Teoria visual, exercícios interativos e gamificação para dominar ligações iônicas.
+          Teoria visual, exercícios interativos e aprendizado interativo para dominar ligações iônicas.
         </p>
         <div style={s.heroBtns}>
           <button style={s.btnCta} onClick={() => navigate('/cadastro')}>
@@ -148,6 +148,18 @@ export default function Landing() {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
           <button style={s.btnOutline} onClick={() => navigate('/login')}>Já tenho conta</button>
+        </div>
+        <div style={s.heroStats}>
+          {[
+            { to:4,   suffix:' módulos', label:'de conteúdo',    color:'#8b7cf8' },
+            { to:10,  suffix:' questões', label:'no quiz final', color:'#f0a742' },
+            { to:118, suffix:' elementos', label:'na tabela',    color:'#3ee8c4' },
+          ].map((st,i)=>(
+            <div key={i} style={{ textAlign:'center' }}>
+              <div style={{ fontSize:28, fontWeight:800, color:st.color }}><Counter to={st.to} suffix={st.suffix}/></div>
+              <div style={{ fontSize:12, color:'#4a4a68', marginTop:3 }}>{st.label}</div>
+            </div>
+          ))}
         </div>
       </section>
 
