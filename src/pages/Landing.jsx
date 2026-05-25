@@ -31,7 +31,7 @@ export default function Landing() {
   const features = [
     {
       icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>,
-      color:'#8b7cf8', bg:'rgba(139,124,248,0.12)', border:'rgba(139,124,248,0.28)',
+      color:'#3b82f6', bg:'rgba(59,130,246,0.12)', border:'rgba(59,130,246,0.28)',
       title:'4 módulos progressivos',
       desc:'Do básico ao avançado, com dificuldade crescente e desbloqueio sequencial.',
     },
@@ -49,16 +49,16 @@ export default function Landing() {
     },
     {
       icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>,
-      color:'#3ee8c4', bg:'rgba(62,232,196,0.1)', border:'rgba(62,232,196,0.25)',
+      color:'#38bdf8', bg:'rgba(56,189,248,0.1)', border:'rgba(62,232,196,0.25)',
       title:'Perfil e progresso',
       desc:'Acompanhe XP, precisão média, tempo e histórico de conquistas no seu perfil.',
     },
   ]
 
   const steps = [
-    { num:'01', title:'Crie sua conta', desc:'Cadastre-se em menos de 1 minuto com nome, e-mail e turma.', color:'#8b7cf8' },
+    { num:'01', title:'Crie sua conta', desc:'Cadastre-se em menos de 1 minuto com nome, e-mail e turma.', color:'#3b82f6' },
     { num:'02', title:'Estude a teoria', desc:'Teoria visual com tabela periódica interativa e diagramas de distribuição eletrônica.', color:'#f0a742' },
-    { num:'03', title:'Pratique e ganhe XP', desc:'Exercícios de arrastar, múltipla escolha e montagem de fórmulas iônicas.', color:'#3ee8c4' },
+    { num:'03', title:'Pratique e ganhe XP', desc:'Exercícios de arrastar, múltipla escolha e montagem de fórmulas iônicas.', color:'#38bdf8' },
     { num:'04', title:'Complete o Desafio Final', desc:'Quiz com 10 questões, 3 fases e bônus de velocidade. Conquiste o badge de Mestre Iônico.', color:'#f06e7a' },
   ]
 
@@ -70,34 +70,34 @@ export default function Landing() {
   ]
 
   const modColors = {
-    v:{ bg:'rgba(139,124,248,0.12)', border:'rgba(139,124,248,0.28)', color:'#8b7cf8' },
-    m:{ bg:'rgba(62,232,196,0.1)',   border:'rgba(62,232,196,0.25)',  color:'#3ee8c4' },
+    v:{ bg:'rgba(59,130,246,0.12)', border:'rgba(59,130,246,0.28)', color:'#3b82f6' },
+    m:{ bg:'rgba(56,189,248,0.1)',   border:'rgba(62,232,196,0.25)',  color:'#38bdf8' },
     a:{ bg:'rgba(240,167,66,0.12)', border:'rgba(240,167,66,0.28)',  color:'#f0a742' },
     r:{ bg:'rgba(240,110,122,0.1)', border:'rgba(240,110,122,0.28)',color:'#f06e7a' },
   }
 
   const s = {
-    page: { background:'#09090f', color:'#ededfc', fontFamily:"'Segoe UI',system-ui,sans-serif", minHeight:'100vh', overflowX:'hidden' },
+    page: { background:'#0a0f1e', color:'#ededfc', fontFamily:"'Segoe UI',system-ui,sans-serif", minHeight:'100vh', overflowX:'hidden' },
     nav: { position:'sticky', top:0, zIndex:100, display:'flex', alignItems:'center', justifyContent:'space-between', padding:'18px 40px', background:'rgba(9,9,15,0.92)', borderBottom:'1px solid rgba(255,255,255,0.07)', backdropFilter:'blur(12px)' },
-    logoMark: { width:32, height:32, borderRadius:10, background:'rgba(139,124,248,0.12)', border:'1px solid rgba(139,124,248,0.28)', display:'flex', alignItems:'center', justifyContent:'center' },
+    logoMark: { width:32, height:32, borderRadius:10, background:'rgba(59,130,246,0.12)', border:'1px solid rgba(59,130,246,0.28)', display:'flex', alignItems:'center', justifyContent:'center' },
     logoText: { fontSize:17, fontWeight:700, letterSpacing:'-0.3px' },
     navRight: { display:'flex', gap:10, alignItems:'center' },
-    btnGhost: { padding:'7px 18px', background:'transparent', border:'1px solid rgba(255,255,255,0.12)', color:'#8888aa', fontSize:13, fontWeight:600, borderRadius:9, cursor:'pointer' },
-    btnPrimary: { padding:'7px 18px', background:'#8b7cf8', color:'#fff', fontSize:13, fontWeight:700, border:'none', borderRadius:9, cursor:'pointer' },
+    btnGhost: { padding:'7px 18px', background:'transparent', border:'1px solid rgba(255,255,255,0.12)', color:'#94a3b8', fontSize:13, fontWeight:600, borderRadius:9, cursor:'pointer' },
+    btnPrimary: { padding:'7px 18px', background:'#3b82f6', color:'#fff', fontSize:13, fontWeight:700, border:'none', borderRadius:9, cursor:'pointer' },
     hero: { textAlign:'center', padding:'80px 40px 64px', position:'relative' },
     h1: { fontSize:'clamp(30px,4.5vw,52px)', fontWeight:800, lineHeight:1.12, letterSpacing:'-1.5px', marginBottom:16, maxWidth:580, marginLeft:'auto', marginRight:'auto' },
-    heroP: { fontSize:15, color:'#8888aa', maxWidth:420, margin:'0 auto 32px', lineHeight:1.7 },
+    heroP: { fontSize:15, color:'#94a3b8', maxWidth:420, margin:'0 auto 32px', lineHeight:1.7 },
     heroBtns: { display:'flex', gap:12, justifyContent:'center', flexWrap:'wrap' },
-    btnCta: { padding:'14px 32px', background:'#8b7cf8', color:'#fff', fontSize:15, fontWeight:700, border:'none', borderRadius:12, cursor:'pointer', display:'flex', alignItems:'center', gap:8, boxShadow:'0 0 28px rgba(139,124,248,0.25)' },
+    btnCta: { padding:'14px 32px', background:'#3b82f6', color:'#fff', fontSize:15, fontWeight:700, border:'none', borderRadius:12, cursor:'pointer', display:'flex', alignItems:'center', gap:8, boxShadow:'0 0 28px rgba(59,130,246,0.25)' },
     btnOutline: { padding:'14px 28px', background:'transparent', border:'1px solid rgba(255,255,255,0.12)', color:'#ededfc', fontSize:15, fontWeight:600, borderRadius:12, cursor:'pointer' },
     heroStats: { display:'flex', gap:48, justifyContent:'center', marginTop:52, flexWrap:'wrap' },
     divider: { height:'1px', background:'rgba(255,255,255,0.07)', margin:'0 40px' },
     section: { padding:'64px 40px' },
-    sectionLabel: { fontSize:11, fontWeight:700, color:'#8b7cf8', letterSpacing:2, textTransform:'uppercase', textAlign:'center', marginBottom:10 },
+    sectionLabel: { fontSize:11, fontWeight:700, color:'#3b82f6', letterSpacing:2, textTransform:'uppercase', textAlign:'center', marginBottom:10 },
     sectionTitle: { fontSize:'clamp(22px,2.8vw,32px)', fontWeight:800, letterSpacing:'-0.5px', textAlign:'center', marginBottom:8 },
-    sectionSub: { fontSize:14, color:'#8888aa', textAlign:'center', marginBottom:36, lineHeight:1.6 },
-    card: { background:'#17171f', border:'1px solid rgba(255,255,255,0.07)', borderRadius:16 },
-    ctaBox: { background:'#17171f', border:'1px solid rgba(139,124,248,0.28)', borderRadius:24, padding:'52px 40px', textAlign:'center', maxWidth:520, margin:'0 auto', position:'relative', overflow:'hidden' },
+    sectionSub: { fontSize:14, color:'#94a3b8', textAlign:'center', marginBottom:36, lineHeight:1.6 },
+    card: { background:'#111c30', border:'1px solid rgba(255,255,255,0.07)', borderRadius:16 },
+    ctaBox: { background:'#111c30', border:'1px solid rgba(59,130,246,0.28)', borderRadius:24, padding:'52px 40px', textAlign:'center', maxWidth:520, margin:'0 auto', position:'relative', overflow:'hidden' },
     footer: { borderTop:'1px solid rgba(255,255,255,0.07)', padding:'20px 40px', display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:10 },
   }
 
@@ -106,8 +106,8 @@ export default function Landing() {
 
       {/* Blobs */}
       {[
-        { w:420, h:420, bg:'rgba(139,124,248,0.055)', top:'-120px', left:'-120px' },
-        { w:360, h:360, bg:'rgba(62,232,196,0.04)',   bottom:0,    right:'-80px' },
+        { w:420, h:420, bg:'rgba(59,130,246,0.055)', top:'-120px', left:'-120px' },
+        { w:360, h:360, bg:'rgba(56,189,248,0.04)',   bottom:0,    right:'-80px' },
         { w:300, h:300, bg:'rgba(240,167,66,0.035)',  top:'45%',   left:'48%'   },
       ].map((b,i)=>(
         <div key={i} style={{ position:'fixed', borderRadius:'50%', filter:'blur(80px)', pointerEvents:'none', zIndex:0, width:b.w, height:b.h, background:b.bg, top:b.top||'auto', left:b.left||'auto', bottom:b.bottom||'auto', right:b.right||'auto' }}/>
@@ -117,13 +117,13 @@ export default function Landing() {
       <nav style={s.nav}>
         <div style={{ display:'flex', alignItems:'center', gap:10 }}>
           <div style={s.logoMark}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8b7cf8" strokeWidth="2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2">
               <circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="9" opacity="0.4"/>
               <line x1="12" y1="3" x2="12" y2="7"/><line x1="12" y1="17" x2="12" y2="21"/>
               <line x1="3" y1="12" x2="7" y2="12"/><line x1="17" y1="12" x2="21" y2="12"/>
             </svg>
           </div>
-          <span style={s.logoText}>Ion<b style={{ color:'#8b7cf8' }}>Lab</b></span>
+          <span style={s.logoText}>Ion<b style={{ color:'#3b82f6' }}>Lab</b></span>
         </div>
         <div style={s.navRight}>
           <button style={s.btnGhost} onClick={() => navigate('/login')}>Entrar</button>
@@ -135,7 +135,7 @@ export default function Landing() {
       <section style={{ ...s.hero, position:'relative', zIndex:1 }}>
         <h1 style={s.h1}>
           Aprenda{' '}
-          <span style={{ background:'linear-gradient(135deg,#8b7cf8 0%,#3ee8c4 65%)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>
+          <span style={{ background:'linear-gradient(135deg,#3b82f6 0%,#38bdf8 65%)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>
             Ligações Iônicas
           </span>{' '}de forma interativa
         </h1>
@@ -151,13 +151,13 @@ export default function Landing() {
         </div>
         <div style={s.heroStats}>
           {[
-            { to:4,   suffix:' módulos', label:'de conteúdo',    color:'#8b7cf8' },
+            { to:4,   suffix:' módulos', label:'de conteúdo',    color:'#3b82f6' },
             { to:10,  suffix:' questões', label:'no quiz final', color:'#f0a742' },
-            { to:118, suffix:' elementos', label:'na tabela',    color:'#3ee8c4' },
+            { to:118, suffix:' elementos', label:'na tabela',    color:'#38bdf8' },
           ].map((st,i)=>(
             <div key={i} style={{ textAlign:'center' }}>
               <div style={{ fontSize:28, fontWeight:800, color:st.color }}><Counter to={st.to} suffix={st.suffix}/></div>
-              <div style={{ fontSize:12, color:'#4a4a68', marginTop:3 }}>{st.label}</div>
+              <div style={{ fontSize:12, color:'#475569', marginTop:3 }}>{st.label}</div>
             </div>
           ))}
         </div>
@@ -178,7 +178,7 @@ export default function Landing() {
                 <div style={{ width:44, height:44, borderRadius:12, background:c.bg, border:`1px solid ${c.border}`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:14, fontWeight:800, color:c.color, flexShrink:0 }}>{m.num}</div>
                 <div>
                   <div style={{ fontSize:14, fontWeight:700, marginBottom:3 }}>{m.title}</div>
-                  <div style={{ fontSize:12, color:'#8888aa', lineHeight:1.4 }}>{m.desc}</div>
+                  <div style={{ fontSize:12, color:'#94a3b8', lineHeight:1.4 }}>{m.desc}</div>
                 </div>
               </div>
             )
@@ -202,7 +202,7 @@ export default function Landing() {
                 {f.icon}
               </div>
               <div style={{ fontSize:13, fontWeight:700, marginBottom:6 }}>{f.title}</div>
-              <div style={{ fontSize:12, color:'#8888aa', lineHeight:1.55 }}>{f.desc}</div>
+              <div style={{ fontSize:12, color:'#94a3b8', lineHeight:1.55 }}>{f.desc}</div>
             </div>
           ))}
         </div>
@@ -221,10 +221,10 @@ export default function Landing() {
               {i < steps.length-1 && (
                 <div style={{ position:'absolute', left:19, top:42, width:1, height:'calc(100% - 10px)', background:'rgba(255,255,255,0.07)' }}/>
               )}
-              <div style={{ width:40, height:40, borderRadius:'50%', border:`1.5px solid ${st.color}`, background:'#09090f', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13, fontWeight:800, color:st.color, flexShrink:0, zIndex:1 }}>{st.num}</div>
+              <div style={{ width:40, height:40, borderRadius:'50%', border:`1.5px solid ${st.color}`, background:'#0a0f1e', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13, fontWeight:800, color:st.color, flexShrink:0, zIndex:1 }}>{st.num}</div>
               <div style={{ paddingBottom:32 }}>
                 <div style={{ fontSize:15, fontWeight:700, marginBottom:5, marginTop:9 }}>{st.title}</div>
-                <div style={{ fontSize:13, color:'#8888aa', lineHeight:1.65, maxWidth:440 }}>{st.desc}</div>
+                <div style={{ fontSize:13, color:'#94a3b8', lineHeight:1.65, maxWidth:440 }}>{st.desc}</div>
               </div>
             </div>
           ))}
@@ -236,19 +236,19 @@ export default function Landing() {
       {/* CTA FINAL */}
       <section style={{ ...s.section, position:'relative', zIndex:1 }}>
         <div style={s.ctaBox}>
-          <div style={{ position:'absolute', top:'-80px', left:'50%', transform:'translateX(-50%)', width:280, height:280, borderRadius:'50%', background:'radial-gradient(circle,rgba(139,124,248,0.08) 0%,transparent 70%)', pointerEvents:'none' }}/>
-          <div style={{ width:56, height:56, borderRadius:'50%', background:'rgba(139,124,248,0.12)', border:'1.5px solid rgba(139,124,248,0.28)', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 20px', position:'relative' }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8b7cf8" strokeWidth="1.8">
+          <div style={{ position:'absolute', top:'-80px', left:'50%', transform:'translateX(-50%)', width:280, height:280, borderRadius:'50%', background:'radial-gradient(circle,rgba(59,130,246,0.08) 0%,transparent 70%)', pointerEvents:'none' }}/>
+          <div style={{ width:56, height:56, borderRadius:'50%', background:'rgba(59,130,246,0.12)', border:'1.5px solid rgba(59,130,246,0.28)', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 20px', position:'relative' }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="1.8">
               <circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="9" opacity="0.4"/>
               <line x1="12" y1="3" x2="12" y2="7"/><line x1="12" y1="17" x2="12" y2="21"/>
               <line x1="3" y1="12" x2="7" y2="12"/><line x1="17" y1="12" x2="21" y2="12"/>
             </svg>
           </div>
           <h2 style={{ fontSize:'clamp(22px,2.8vw,30px)', fontWeight:800, letterSpacing:'-0.5px', marginBottom:12, position:'relative' }}>Pronto para começar?</h2>
-          <p style={{ fontSize:14, color:'#8888aa', lineHeight:1.7, marginBottom:28, position:'relative', maxWidth:380, margin:'0 auto 28px' }}>
+          <p style={{ fontSize:14, color:'#94a3b8', lineHeight:1.7, marginBottom:28, position:'relative', maxWidth:380, margin:'0 auto 28px' }}>
             Crie sua conta gratuitamente e comece a dominar as ligações iônicas agora mesmo.
           </p>
-          <button style={{ ...s.btnCta, margin:'0 auto', boxShadow:'0 0 40px rgba(139,124,248,0.2)' }} onClick={() => navigate('/cadastro')}>
+          <button style={{ ...s.btnCta, margin:'0 auto', boxShadow:'0 0 40px rgba(59,130,246,0.2)' }} onClick={() => navigate('/cadastro')}>
             Criar conta
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
@@ -258,10 +258,10 @@ export default function Landing() {
       {/* FOOTER */}
       <footer style={{ ...s.footer, position:'relative', zIndex:1 }}>
         <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-          <div style={{ width:26, height:26, borderRadius:7, background:'rgba(139,124,248,0.12)', border:'1px solid rgba(139,124,248,0.28)', display:'flex', alignItems:'center', justifyContent:'center' }}>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8b7cf8" strokeWidth="2"><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="9" opacity="0.3"/></svg>
+          <div style={{ width:26, height:26, borderRadius:7, background:'rgba(59,130,246,0.12)', border:'1px solid rgba(59,130,246,0.28)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2"><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="9" opacity="0.3"/></svg>
           </div>
-          <span style={{ fontSize:13, fontWeight:700 }}>Ion<b style={{ color:'#8b7cf8' }}>Lab</b></span>
+          <span style={{ fontSize:13, fontWeight:700 }}>Ion<b style={{ color:'#3b82f6' }}>Lab</b></span>
         </div>
       </footer>
 

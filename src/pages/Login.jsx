@@ -33,17 +33,17 @@ export default function Login() {
           {/* Logo */}
           <div style={{ display:'flex', alignItems:'center', gap:10, justifyContent:'center', marginBottom:'2rem' }}>
             <div style={logoMark}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b7cf8" strokeWidth="2">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2">
                 <circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="9" opacity="0.4"/>
                 <line x1="12" y1="3" x2="12" y2="7"/><line x1="12" y1="17" x2="12" y2="21"/>
                 <line x1="3" y1="12" x2="7" y2="12"/><line x1="17" y1="12" x2="21" y2="12"/>
               </svg>
             </div>
-            <span style={{ fontSize:20, fontWeight:800 }}>Ion<b style={{ color:'#8b7cf8' }}>Lab</b></span>
+            <span style={{ fontSize:20, fontWeight:800 }}>Ion<b style={{ color:'#3b82f6' }}>Lab</b></span>
           </div>
 
           <h1 style={{ fontSize:22, fontWeight:800, marginBottom:6, textAlign:'center' }}>Bem-vindo de volta</h1>
-          <p style={{ fontSize:14, color:'#8888aa', marginBottom:'1.8rem', textAlign:'center' }}>Entre na sua conta para continuar</p>
+          <p style={{ fontSize:14, color:'#94a3b8', marginBottom:'1.8rem', textAlign:'center' }}>Entre na sua conta para continuar</p>
 
           <form onSubmit={handleLogin} style={{ display:'flex', flexDirection:'column', gap:14 }}>
             <div>
@@ -64,14 +64,14 @@ export default function Login() {
             )}
 
             <button type="submit" disabled={loading}
-              style={{ padding:'13px', background:'#8b7cf8', color:'#fff', fontSize:15, fontWeight:700, border:'none', borderRadius:12, cursor: loading?'default':'pointer', opacity: loading?0.7:1, marginTop:4 }}>
+              style={{ padding:'13px', background:'#3b82f6', color:'#fff', fontSize:15, fontWeight:700, border:'none', borderRadius:12, cursor: loading?'default':'pointer', opacity: loading?0.7:1, marginTop:4 }}>
               {loading ? 'Entrando...' : 'Entrar'}
             </button>
           </form>
 
-          <p style={{ textAlign:'center', fontSize:13, color:'#8888aa', marginTop:'1.5rem' }}>
+          <p style={{ textAlign:'center', fontSize:13, color:'#94a3b8', marginTop:'1.5rem' }}>
             Não tem conta?{' '}
-            <Link to="/cadastro" style={{ color:'#8b7cf8', fontWeight:600, textDecoration:'none' }}>Criar conta</Link>
+            <Link to="/cadastro" style={{ color:'#3b82f6', fontWeight:600, textDecoration:'none' }}>Criar conta</Link>
           </p>
         </div>
       </div>
@@ -80,7 +80,7 @@ export default function Login() {
 }
 
 const wrap   = { minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', padding:'1.5rem', position:'relative', zIndex:1 }
-const card   = { background:'#17171f', border:'1px solid rgba(255,255,255,0.07)', borderRadius:20, padding:'2.5rem', width:'100%', maxWidth:420 }
-const logoMark = { width:36, height:36, borderRadius:10, background:'rgba(139,124,248,0.12)', border:'1px solid rgba(139,124,248,0.28)', display:'flex', alignItems:'center', justifyContent:'center' }
-const labelS = { display:'block', fontSize:13, fontWeight:600, color:'#8888aa', marginBottom:6 }
-const inputS = { width:'100%', padding:'11px 14px', background:'#1d1d28', border:'1px solid rgba(255,255,255,0.1)', borderRadius:10, color:'#ededfc', fontSize:14, outline:'none', fontFamily:'inherit' }
+const card   = { background:'#111c30', border:'1px solid rgba(255,255,255,0.07)', borderRadius:20, padding:'2.5rem', width:'100%', maxWidth:420 }
+const logoMark = { width:36, height:36, borderRadius:10, background:'rgba(59,130,246,0.12)', border:'1px solid rgba(59,130,246,0.28)', display:'flex', alignItems:'center', justifyContent:'center' }
+const labelS = { display:'block', fontSize:13, fontWeight:600, color:'#94a3b8', marginBottom:6 }
+const inputS = { width:'100%', padding:'11px 14px', background:'#0d1525', border:'1px solid rgba(255,255,255,0.1)', borderRadius:10, color:'#ededfc', fontSize:14, outline:'none', fontFamily:'inherit' }

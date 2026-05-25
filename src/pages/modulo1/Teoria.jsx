@@ -216,14 +216,21 @@ function PeriodicTable(){
   )
 }
 
-function SidebarStep({num,label,current,onClick}){
-  const active=current===num, done=current>num
+function SidebarStep({num,label,current}){
+  const active = current===num
+  const done   = current>num
+  const locked = num>current
   return(
-    <div onClick={onClick} style={{display:'flex',alignItems:'center',gap:10,padding:'10px 12px',borderRadius:10,cursor:'pointer',marginBottom:4,border:`1px solid ${active?'var(--teal-border)':'transparent'}`,background:active?'var(--teal-dim)':'transparent',opacity:done?0.7:1}}>
-      <div style={{width:26,height:26,borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:12,fontWeight:700,flexShrink:0,border:`1.5px solid ${active?'var(--teal)':done?'var(--teal-border)':'var(--border2)'}`,background:active?'var(--teal)':done?'rgba(78,205,196,0.2)':'transparent',color:active?'#0a1628':done?'var(--teal)':'var(--text2)'}}>
-        {done?'✓':num}
+    <div style={{display:'flex',alignItems:'center',gap:10,padding:'10px 12px',borderRadius:10,marginBottom:4,cursor:locked?'default':'pointer',border:`1px solid ${active?'rgba(59,130,246,0.35)':'transparent'}`,background:active?'rgba(59,130,246,0.1)':'transparent',opacity:locked?0.4:1}}>
+      <div style={{width:26,height:26,borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:12,fontWeight:700,flexShrink:0,border:`1.5px solid ${active?'#3b82f6':done?'rgba(59,130,246,0.4)':'rgba(255,255,255,0.1)'}`,background:active?'#3b82f6':done?'rgba(59,130,246,0.15)':'transparent',color:active?'#fff':done?'#3b82f6':'#475569'}}>
+        {done
+          ? <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          : locked
+            ? <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            : num
+        }
       </div>
-      <span style={{fontSize:13,color:active?'var(--text)':'var(--text2)',fontWeight:active?600:400}}>{label}</span>
+      <span style={{fontSize:13,color:active?'#e2e8f8':done?'#94a3b8':'#475569',fontWeight:active?600:400}}>{label}</span>
     </div>
   )
 }
@@ -280,8 +287,8 @@ export default function Teoria(){
       <div style={{display:'flex',paddingTop:56,minHeight:'100vh',position:'relative',zIndex:1}}>
         <aside style={{width:220,flexShrink:0,padding:'2rem 1rem',borderRight:'1px solid var(--border)',position:'sticky',top:56,height:'calc(100vh - 56px)',overflowY:'auto'}}>
           <div style={{fontSize:10,letterSpacing:'1.5px',fontWeight:700,color:'var(--text3)',textTransform:'uppercase',marginBottom:'1rem'}}>Progresso</div>
-          <SidebarStep num={1} label="Tabela Periódica" current={step} onClick={()=>setStep(1)}/>
-          <SidebarStep num={2} label="Distribuição Eletrônica" current={step} onClick={()=>setStep(2)}/>
+          <SidebarStep num={1} label="Tabela Periódica" current={step}/>
+          <SidebarStep num={2} label="Distribuição Eletrônica" current={step}/>
         </aside>
         <main style={{flex:1,padding:'2.5rem 2rem',maxWidth:900,overflowY:'auto'}}>
 
