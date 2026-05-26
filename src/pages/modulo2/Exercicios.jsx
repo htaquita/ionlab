@@ -5,22 +5,25 @@ import Background from '../../components/Background'
 import Navbar from '../../components/Navbar'
 import ProgressDots from '../../components/ProgressDots'
 import { ExercicioMC, ExercicioDnD } from '../../components/ExerciciosBase'
-import { fetchQuestoes } from '../../lib/questoesService'
+import { fetchQuestoes, salvarSessao } from '../../lib/questoesService'
 
-const TEMA_IDS = [4, 5]
-const TOTAL_Q  = 10
-const MIN_DND  = 2
+const TEMA_IDS  = [4, 5]
+const TOTAL_Q   = 10
+const MIN_DND   = 2
+const TEMA_PRINCIPAL = 4 // tema usado para registrar a sessão
 
 export default function Exercicios() {
   const navigate = useNavigate()
-  const { addXP, setProgress } = useUser()
+  const { user, addXP, setProgress } = useUser()
 
-  const [questoes, setQuestoes] = useState([])
-  const [loading, setLoading]   = useState(true)
-  const [erro, setErro]         = useState(null)
-  const [atual, setAtual]       = useState(0)
-  const [score, setScore]       = useState(0)
+  const [questoes, setQuestoes]   = useState([])
+  const [loading, setLoading]     = useState(true)
+  const [erro, setErro]           = useState(null)
+  const [atual, setAtual]         = useState(0)
+  const [score, setScore]         = useState(0)
+  const respostas = useRef([])
   const startTime = useRef(Date.now())
+  const qStartTime = useRef(Date.now())
 
   useEffect(() => {
     fetchQuestoes(TEMA_IDS, TOTAL_Q, MIN_DND)
@@ -28,15 +31,24 @@ export default function Exercicios() {
       .catch(e  => { setErro(e.message); setLoading(false) })
   }, [])
 
-  function goNext(acertou) {
+  async function goNext(acertou) {
+    const tempo = Math.floor((Date.now() - qStartTime.current) / 1000)
+    respostas.current.push({ questaoId: questoes[atual].id, acertou, tempo })
+    qStartTime.current = Date.now()
+
     const novoScore = score + (acertou ? 1 : 0)
     if (acertou) { setScore(novoScore); addXP(10) }
+
     if (atual < questoes.length - 1) {
       setAtual(a => a + 1)
     } else {
       const aprovado = novoScore / questoes.length >= 0.8
       if (aprovado) setProgress('m2', 100)
       const elapsed = Math.floor((Date.now() - startTime.current) / 1000)
+
+      // Salvar sessão no banco
+      if (user) await salvarSessao(user.id, TEMA_PRINCIPAL, questoes, respostas.current)
+
       navigate('/modulo2/resultado', {
         state: { score: novoScore, total: questoes.length, time: elapsed },
       })
@@ -45,19 +57,12 @@ export default function Exercicios() {
 
   if (loading) return (
     <><Background/><Navbar/>
-      <div style={s.center}>
-        <div style={s.spin}/>
-        <p style={{ color:'#64748b', fontSize:14 }}>Carregando exercícios...</p>
-      </div>
+      <div style={s.center}><div style={s.spin}/><p style={{ color:'#64748b',fontSize:14 }}>Carregando exercícios...</p></div>
     </>
   )
-
   if (erro) return (
     <><Background/><Navbar/>
-      <div style={s.center}>
-        <p style={{ color:'#fca5a5', fontSize:14 }}>Erro: {erro}</p>
-        <button onClick={() => window.location.reload()} style={s.btnR}>Tentar novamente</button>
-      </div>
+      <div style={s.center}><p style={{ color:'#fca5a5',fontSize:14 }}>Erro: {erro}</p><button onClick={()=>window.location.reload()} style={s.btnR}>Tentar novamente</button></div>
     </>
   )
 
@@ -71,7 +76,7 @@ export default function Exercicios() {
           <ProgressDots total={questoes.length} current={atual}/>
         </div>
         <div style={s.card}>
-          {q?.tipo === 'mc'
+          {q?.tipo==='mc'
             ? <ExercicioMC  key={q.id} questao={q} nextLabel={isLast?'Ver Resultado →':'Próximo →'} onNext={goNext}/>
             : <ExercicioDnD key={q.id} questao={q} nextLabel={isLast?'Ver Resultado →':'Próximo →'} onNext={goNext}/>
           }
