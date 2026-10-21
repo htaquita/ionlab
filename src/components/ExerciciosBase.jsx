@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import FeedbackBar from '../components/FeedbackBar'
 
 // ── Exercício de Múltipla Escolha ─────────────────────────────
@@ -67,26 +67,36 @@ export function ExercicioMC({ questao, nextLabel, onNext }) {
   )
 }
 
-// ── Exercício de Drag & Drop ───────────────────────────────────
+// ── Exercício de Arrastar e Soltar ──────────────────────────────
+// Usa toque-para-selecionar + toque-para-posicionar em vez do HTML5
+// drag-and-drop nativo, que não funciona em telas touch (mobile).
 export function ExercicioDnD({ questao, nextLabel, onNext }) {
   const [placed, setPlaced]     = useState({ cation:[], anion:[] })
+  const [selected, setSelected] = useState(null)
   const [verified, setVerified] = useState(false)
   const [feedback, setFeedback] = useState(null)
   const [acertou, setAcertou]   = useState(false)
-  const dragging = useRef(null)
 
   const elems = questao.elemento_dnd || []
   const allPlaced = placed.cation.length + placed.anion.length === elems.length
 
-  function onDrop(zone) {
-    const id = dragging.current
-    if (!id) return
-    if (placed.cation.includes(id) || placed.anion.includes(id)) return
-    setPlaced(p => ({ ...p, [zone]: [...p[zone], id] }))
-    dragging.current = null
+  function isPlaced(id) {
+    return placed.cation.includes(id) || placed.anion.includes(id)
   }
 
-  function remove(id, zone) {
+  function selectElement(id) {
+    if (verified || isPlaced(id)) return
+    setSelected(sel => (sel === id ? null : id))
+  }
+
+  function placeInZone(zone) {
+    if (verified || selected === null) return
+    setPlaced(p => ({ ...p, [zone]: [...p[zone], selected] }))
+    setSelected(null)
+  }
+
+  function removeFromZone(id, zone, ev) {
+    ev.stopPropagation()
     if (verified) return
     setPlaced(p => ({ ...p, [zone]: p[zone].filter(x => x !== id) }))
     setFeedback(null)
@@ -122,19 +132,23 @@ export function ExercicioDnD({ questao, nextLabel, onNext }) {
   return (
     <div>
       <div style={{ fontSize:11, fontWeight:700, letterSpacing:1.5, textTransform:'uppercase', color:'#475569', marginBottom:8 }}>
-        Arrastar e soltar
+        Toque para classificar
       </div>
       <h2 style={{ fontSize:17, fontWeight:700, color:'#e2e8f8', marginBottom:6, lineHeight:1.4 }}>{questao.enunciado}</h2>
-      <p style={{ fontSize:13, color:'#64748b', marginBottom:'1.2rem', lineHeight:1.6 }}>{questao.dica}</p>
+      <p style={{ fontSize:13, color:'#64748b', marginBottom:'1rem', lineHeight:1.6 }}>{questao.dica}</p>
 
-      {/* Elementos para arrastar */}
+      <p style={{ fontSize:12, color: selected ? '#3b82f6' : '#475569', marginBottom:10, fontWeight:600, minHeight:16 }}>
+        {selected ? 'Agora toque na categoria correta ↓' : 'Toque em um elemento para selecioná-lo'}
+      </p>
+
+      {/* Elementos para classificar */}
       <div style={{ display:'flex', gap:8, flexWrap:'wrap', marginBottom:'1.2rem', minHeight:52 }}>
         {elems.map(e => {
-          const used = placed.cation.includes(e.id) || placed.anion.includes(e.id)
+          const used  = isPlaced(e.id)
+          const isSel = selected === e.id
           return (
-            <div key={e.id} draggable={!used && !verified}
-              onDragStart={() => { dragging.current = e.id }}
-              style={{ background:'#0d1525', border:'1.5px solid rgba(255,255,255,0.1)', borderRadius:10, padding:'10px 14px', cursor: used?'default':'grab', opacity: used?0.2:1, display:'flex', flexDirection:'column', alignItems:'center', userSelect:'none', transition:'opacity 0.2s' }}>
+            <div key={e.id} onClick={() => selectElement(e.id)}
+              style={{ background: isSel ? 'rgba(59,130,246,0.15)' : '#0d1525', border:`1.5px solid ${isSel ? '#3b82f6' : 'rgba(255,255,255,0.1)'}`, borderRadius:10, padding:'10px 14px', cursor: used || verified ? 'default' : 'pointer', opacity: used?0.2:1, display:'flex', flexDirection:'column', alignItems:'center', userSelect:'none', transition:'all 0.15s' }}>
               <span style={{ fontSize:18, fontWeight:800, color:'#e2e8f8' }}>{e.simbolo}</span>
               <span style={{ fontSize:10, color:'#64748b', marginTop:2 }}>{e.nome}</span>
             </div>
@@ -142,24 +156,20 @@ export function ExercicioDnD({ questao, nextLabel, onNext }) {
         })}
       </div>
 
-      {/* Zonas de soltar */}
+      {/* Zonas de destino */}
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14, marginBottom:'1rem' }}>
         {[
           { zone:'cation', label:'Cátion (+)', bc:'rgba(251,146,60,0.3)',  bg:'rgba(251,146,60,0.06)',  color:'#fb923c' },
           { zone:'anion',  label:'Ânion (−)',  bc:'rgba(56,189,248,0.28)', bg:'rgba(56,189,248,0.06)',  color:'#38bdf8' },
         ].map(({ zone, label, bc, bg, color }) => (
-          <div key={zone}
-            onDragOver={e => e.preventDefault()}
-            onDrop={() => onDrop(zone)}
-            onDragEnter={e => e.currentTarget.style.background='rgba(59,130,246,0.06)'}
-            onDragLeave={e => e.currentTarget.style.background='transparent'}
-            style={{ border:`2px dashed ${bc}`, borderRadius:12, padding:'1rem', minHeight:90, transition:'background 0.2s' }}>
+          <div key={zone} onClick={() => placeInZone(zone)}
+            style={{ border:`2px dashed ${bc}`, borderRadius:12, padding:'1rem', minHeight:90, background: selected && !verified ? bg : 'transparent', cursor: selected && !verified ? 'pointer' : 'default', transition:'background 0.2s' }}>
             <div style={{ fontSize:12, fontWeight:700, color, marginBottom:8 }}>{label}</div>
             <div style={{ display:'flex', gap:6, flexWrap:'wrap', minHeight:32 }}>
               {placed[zone].map(id => {
                 const e = elems.find(x => x.id === id)
                 return (
-                  <div key={id} onClick={() => remove(id, zone)}
+                  <div key={id} onClick={(ev) => removeFromZone(id, zone, ev)}
                     style={{ padding:'5px 12px', borderRadius:8, fontSize:13, fontWeight:700, cursor: verified?'default':'pointer', border:'1px solid', background:bg, color, borderColor:bc, animation:'popIn 0.2s ease', ...itemStyle(id) }}>
                     {e?.simbolo} {!verified && <span style={{ opacity:0.5, fontSize:10 }}>✕</span>}
                   </div>

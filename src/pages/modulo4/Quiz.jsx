@@ -14,29 +14,50 @@ const FASES = [
   { fase:3, temaId:10, label:'Fase 3 — Boss ⚡',         total:4, minDnd:1, cor:'#a78bfa', bg:'rgba(167,139,250,0.1)', border:'rgba(167,139,250,0.28)'},
 ]
 
+// Usa toque-para-selecionar + toque-para-posicionar em vez do HTML5
+// drag-and-drop nativo, que não funciona em telas touch (mobile).
 function DnDQuestion({ q, onAnswer, answered }) {
-  const [placed, setPlaced] = useState({ cation:[], anion:[] })
-  const dragging = useRef(null)
+  const [placed, setPlaced]     = useState({ cation:[], anion:[] })
+  const [selected, setSelected] = useState(null)
   const elems = q.elemento_dnd || []
   const allPlaced = placed.cation.length + placed.anion.length === elems.length
 
   useEffect(() => { if (allPlaced && !answered) onAnswer(placed) }, [placed])
 
-  function drop(zone) {
-    const id = dragging.current
-    if (!id || placed.cation.includes(id) || placed.anion.includes(id)) return
-    setPlaced(p => ({ ...p, [zone]: [...p[zone], id] }))
-    dragging.current = null
+  function isPlaced(id) {
+    return placed.cation.includes(id) || placed.anion.includes(id)
+  }
+
+  function selectElement(id) {
+    if (answered || isPlaced(id)) return
+    setSelected(sel => (sel === id ? null : id))
+  }
+
+  function placeInZone(zone) {
+    if (answered || selected === null) return
+    setPlaced(p => ({ ...p, [zone]: [...p[zone], selected] }))
+    setSelected(null)
+  }
+
+  function removeFromZone(id, zone, ev) {
+    ev.stopPropagation()
+    if (answered) return
+    setPlaced(p => ({ ...p, [zone]: p[zone].filter(x => x !== id) }))
   }
 
   return (
     <div>
+      <p style={{ fontSize:12, color: selected ? '#3b82f6' : '#475569', marginBottom:10, fontWeight:600, minHeight:16 }}>
+        {selected ? 'Agora toque na categoria correta ↓' : 'Toque em um elemento para selecioná-lo'}
+      </p>
+
       <div style={{ display:'flex', gap:8, flexWrap:'wrap', marginBottom:'1rem', minHeight:52 }}>
         {elems.map(e => {
-          const used = placed.cation.includes(e.id) || placed.anion.includes(e.id)
+          const used  = isPlaced(e.id)
+          const isSel = selected === e.id
           return (
-            <div key={e.id} draggable={!used && !answered} onDragStart={() => { dragging.current = e.id }}
-              style={{ background:'#0d1525', border:'1.5px solid rgba(255,255,255,0.1)', borderRadius:10, padding:'10px 16px', cursor:used?'default':'grab', opacity:used?0.2:1, display:'flex', flexDirection:'column', alignItems:'center', userSelect:'none' }}>
+            <div key={e.id} onClick={() => selectElement(e.id)}
+              style={{ background: isSel ? 'rgba(59,130,246,0.15)' : '#0d1525', border:`1.5px solid ${isSel ? '#3b82f6' : 'rgba(255,255,255,0.1)'}`, borderRadius:10, padding:'10px 16px', cursor: used || answered ? 'default' : 'pointer', opacity:used?0.2:1, display:'flex', flexDirection:'column', alignItems:'center', userSelect:'none', transition:'all 0.15s' }}>
               <span style={{ fontSize:18, fontWeight:800 }}>{e.simbolo}</span>
               <span style={{ fontSize:10, color:'#64748b', marginTop:2 }}>{e.nome}</span>
             </div>
@@ -48,15 +69,18 @@ function DnDQuestion({ q, onAnswer, answered }) {
           { zone:'cation', label:'Cátion (+)', bc:'rgba(251,146,60,0.3)', bg:'rgba(251,146,60,0.06)', color:'#fb923c' },
           { zone:'anion',  label:'Ânion (−)',  bc:'rgba(56,189,248,0.28)',bg:'rgba(56,189,248,0.06)',  color:'#38bdf8' },
         ].map(({ zone, label, bc, bg, color }) => (
-          <div key={zone} onDragOver={e=>e.preventDefault()} onDrop={()=>drop(zone)}
-            onDragEnter={e=>e.currentTarget.style.background='rgba(59,130,246,0.06)'}
-            onDragLeave={e=>e.currentTarget.style.background='transparent'}
-            style={{ border:`2px dashed ${bc}`, borderRadius:12, padding:'1rem', minHeight:80 }}>
+          <div key={zone} onClick={() => placeInZone(zone)}
+            style={{ border:`2px dashed ${bc}`, borderRadius:12, padding:'1rem', minHeight:80, background: selected && !answered ? bg : 'transparent', cursor: selected && !answered ? 'pointer' : 'default', transition:'background 0.2s' }}>
             <div style={{ fontSize:12, fontWeight:700, color, marginBottom:8 }}>{label}</div>
             <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
               {placed[zone].map(id => {
                 const e = elems.find(x => x.id === id)
-                return <div key={id} style={{ padding:'5px 12px', borderRadius:8, fontSize:13, fontWeight:700, background:bg, color, border:`1px solid ${bc}`, animation:'popIn 0.15s ease' }}>{e?.simbolo}</div>
+                return (
+                  <div key={id} onClick={(ev) => removeFromZone(id, zone, ev)}
+                    style={{ padding:'5px 12px', borderRadius:8, fontSize:13, fontWeight:700, background:bg, color, border:`1px solid ${bc}`, cursor: answered?'default':'pointer', animation:'popIn 0.15s ease' }}>
+                    {e?.simbolo} {!answered && <span style={{ opacity:0.5, fontSize:10 }}>✕</span>}
+                  </div>
+                )
               })}
             </div>
           </div>
